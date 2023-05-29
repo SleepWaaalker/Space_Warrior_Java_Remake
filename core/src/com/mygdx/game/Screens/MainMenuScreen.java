@@ -15,8 +15,6 @@ public class MainMenuScreen implements Screen, InputProcessor{
 
     private MainGame mainGame;
     public OrthographicCamera camera;
-
-    private Texture bg;
     private Texture playBtn;
     private Texture playBtnDown;
     private Texture shopBtn;
@@ -32,7 +30,6 @@ public class MainMenuScreen implements Screen, InputProcessor{
     private boolean isPlayDown, isShopDown, isRecordsDown, isExitDown;
     float CAMERA_WIDTH = 600F;
     float CAMERA_HEIGHT = 800F;
-
     //
     public MainMenuScreen(MainGame main){
         this.mainGame = main;
@@ -40,13 +37,17 @@ public class MainMenuScreen implements Screen, InputProcessor{
 
     //загрузка фоновой музыки
     private void loadMusic() {
-        gameMusic = Gdx.audio.newMusic(Gdx.files.internal("theme.mp3"));
+        if (gameMusic != null){
+            gameMusic.stop();
+        }
+        gameMusic = Gdx.audio.newMusic(Gdx.files.internal("MenuTheme.wav"));
         buttonSound = Gdx.audio.newMusic(Gdx.files.internal("button_sound.wav"));
+        gameMusic.setLooping(true);
+        gameMusic.play();
     }
 
     //загрузка текстур
     private void loadTextures(){
-        bg = new Texture(Gdx.files.internal("sky.png"));
         playBtn = new Texture("button1.png");
         playBtnDown = new Texture("button2.png");
 
@@ -62,7 +63,7 @@ public class MainMenuScreen implements Screen, InputProcessor{
 
     //прорисовка фона
     public void showBG() {
-        mainGame.batch.draw(bg,0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        mainGame.batch.draw(mainGame.bg,0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
     }
 
     //прорисовка текста
@@ -113,8 +114,6 @@ public class MainMenuScreen implements Screen, InputProcessor{
         camera.setToOrtho(false, 600, 800);
         loadTextures();
         loadMusic();
-        gameMusic.setLooping(true);
-        gameMusic.play();
         Gdx.input.setInputProcessor(this);
     }
 
@@ -171,11 +170,6 @@ public class MainMenuScreen implements Screen, InputProcessor{
     public void dispose() {
         Gdx.input.setInputProcessor(null);
         try{
-            bg.dispose();
-            mainGame.font1.dispose();
-            mainGame.font2.dispose();
-            mainGame.font3.dispose();
-            mainGame.font4.dispose();
             playBtn.dispose();
             playBtnDown.dispose();
             shopBtn.dispose();

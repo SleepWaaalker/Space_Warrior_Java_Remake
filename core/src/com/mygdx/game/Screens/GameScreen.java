@@ -7,31 +7,44 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Rectangle;
 import com.mygdx.game.MainGame;
 
 public class GameScreen implements Screen, InputProcessor {
 
     private MainGame mainGame;
-    private int width, height;
-    private Texture bg;
+    private Texture playerSkin;
+    private Rectangle player;
+    private OrthographicCamera camera;
     public GameScreen(MainGame mainGame) {
         this.mainGame = mainGame;
     }
 
     @Override
     public void show() {
-        Gdx.input.setInputProcessor(this);
+        playerSkin = new Texture(Gdx.files.internal("alien1.png"));
         mainGame.batch = new SpriteBatch();
+        Gdx.input.setInputProcessor(this);
+        camera = new OrthographicCamera();
+        camera.setToOrtho(false, 600, 800);
+        player = new Rectangle();
+        player.x = 600 / 2 - 64 / 2; // центрировать корабль по горизонтали
+        player.y = 20; // нижний левый угол корабля на 20 пикселей выше нижнего края экрана
+        player.width = 64;
+        player.height = 64;
     }
 
     @Override
     public void render(float delta) {
         Gdx.gl.glClearColor(0, 0, 0.2f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        camera.update();
+        mainGame.batch.setProjectionMatrix(camera.combined);
 
         mainGame.batch.begin();
-        bg = new Texture(Gdx.files.internal("sky.png"));
-        mainGame.batch.draw(bg,0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        mainGame.batch.draw(mainGame.bg,0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        mainGame.batch.draw(playerSkin, player.x, player.y);
+
         mainGame.batch.end();
     }
 
@@ -57,7 +70,8 @@ public class GameScreen implements Screen, InputProcessor {
 
     @Override
     public void dispose() {
-
+        mainGame.batch.dispose();
+        playerSkin.dispose();
     }
 
     @Override
