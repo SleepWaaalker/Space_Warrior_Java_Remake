@@ -3,6 +3,7 @@ package com.mygdx.game;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
+import com.mygdx.game.Screens.GameScreen;
 
 public class DesktopLauncher extends ApplicationAdapter {
 
@@ -12,6 +13,5 @@ public class DesktopLauncher extends ApplicationAdapter {
 		config.setForegroundFPS(60);
 		config.setTitle("Space Warrior");
 		new Lwjgl3Application(new MainGame(), config);
-
 	}
 }
