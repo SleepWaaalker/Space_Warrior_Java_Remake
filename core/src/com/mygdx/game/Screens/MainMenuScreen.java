@@ -15,19 +15,18 @@ public class MainMenuScreen implements Screen, InputProcessor{
 
     private MainGame mainGame;
     public OrthographicCamera camera;
-    private Texture playBtn;
-    private Texture playBtnDown;
-    private Texture shopBtn;
-    private Texture shopBtnDown;
-    private Texture recordsBtn;
-    private Texture recordsBtnDown;
-    private Texture exitBtn;
-    private Texture exitBtnDown;
+    private Texture menuBtn, menuBtnDown;
+    private Texture exitBtn, exitBtnDown;
+
+    private int menuBtnCount = 3;
+    private int menuBtnX = 120;
+    private int[] menuBtnY = new int[]{500,355,200};
+    private boolean[] pressBtn = new boolean[menuBtnCount];
+    private boolean isExitDown;
     private Music gameMusic;
     private Music buttonSound;
     private int width, height;
     public float ppuX, ppuY;
-    private boolean isPlayDown, isShopDown, isRecordsDown, isExitDown;
     float CAMERA_WIDTH = 600F;
     float CAMERA_HEIGHT = 800F;
     //
@@ -48,14 +47,8 @@ public class MainMenuScreen implements Screen, InputProcessor{
 
     //загрузка текстур
     private void loadTextures(){
-        playBtn = new Texture("button1.png");
-        playBtnDown = new Texture("button2.png");
-
-        shopBtn = new Texture("button1.png");
-        shopBtnDown = new Texture("button2.png");
-
-        recordsBtn = new Texture("button1.png");
-        recordsBtnDown = new Texture("button2.png");
+        menuBtn = new Texture("button1.png");
+        menuBtnDown = new Texture("button2.png");
 
         exitBtn = new Texture("button3.png");
         exitBtnDown = new Texture("button4.png");
@@ -79,20 +72,12 @@ public class MainMenuScreen implements Screen, InputProcessor{
 
     //вывод кнопок поверх фона
     public void showButton() {
-        if (!isPlayDown) {
-            mainGame.batch.draw(playBtn, 120, 500);
-        } else {
-            mainGame.batch.draw(playBtnDown, 120, 500);
-        }
-        if (!isShopDown) {
-            mainGame.batch.draw(shopBtn, 120, 355);
-        } else {
-            mainGame.batch.draw(shopBtnDown, 120, 355);
-        }
-        if (!isRecordsDown) {
-            mainGame.batch.draw(recordsBtn, 120, 200);
-        } else {
-            mainGame.batch.draw(recordsBtnDown, 120, 200);
+        for (int i =0; i<menuBtnCount; i++){
+            if (!pressBtn[i]) {
+                mainGame.batch.draw(menuBtn, menuBtnX, menuBtnY[i]);
+            } else {
+                mainGame.batch.draw(menuBtnDown, menuBtnX, menuBtnY[i]);
+            }
         }
         if (!isExitDown) {
             mainGame.batch.draw(exitBtn, 215, 30);
@@ -105,9 +90,9 @@ public class MainMenuScreen implements Screen, InputProcessor{
     public void show() {
         ppuX = (float)width / CAMERA_WIDTH;
         ppuY = (float)height / CAMERA_HEIGHT;
-        isPlayDown = false;
-        isShopDown = false;
-        isRecordsDown = false;
+        for (int i = 0; i<menuBtnCount; i++){
+            pressBtn[i] = false;
+        }
         isExitDown = false;
         mainGame.batch = new SpriteBatch();
         camera = new OrthographicCamera();
@@ -170,12 +155,8 @@ public class MainMenuScreen implements Screen, InputProcessor{
     public void dispose() {
         Gdx.input.setInputProcessor(null);
         try{
-            playBtn.dispose();
-            playBtnDown.dispose();
-            shopBtn.dispose();
-            shopBtnDown.dispose();
-            recordsBtn.dispose();
-            recordsBtnDown.dispose();
+            menuBtnDown.dispose();
+            menuBtn.dispose();
             exitBtn.dispose();
             exitBtnDown.dispose();
         }
@@ -201,21 +182,12 @@ public class MainMenuScreen implements Screen, InputProcessor{
     //границы кнопок и обработка нажатий (при нажатии меняется спрайт кнопки)
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        if((height-screenY)/ppuY >= 500 && (height-screenY)/ppuY <= 600 && screenX/ppuX>=120 && screenX/ppuX<=495) {
-            buttonSound.play();
-            isPlayDown = true;
+        for (int i = 0; i<menuBtnCount; i++){
+            if((height-screenY)/ppuY >= menuBtnY[i] && (height-screenY)/ppuY <= menuBtnY[i]+100 && screenX/ppuX>=120 && screenX/ppuX<=495) {
+                buttonSound.play();
+                pressBtn[i] = true;
+            }
         }
-
-        if((height-screenY)/ppuY >= 355 && (height-screenY)/ppuY <= 455 && screenX/ppuX>=120 && screenX/ppuX<=495) {
-            buttonSound.play();
-            isShopDown = true;
-        }
-
-        if((height-screenY)/ppuY >= 200 && (height-screenY)/ppuY <= 300 && screenX/ppuX>=120 && screenX/ppuX<=495) {
-            buttonSound.play();
-            isRecordsDown = true;
-        }
-
         if((height-screenY)/ppuY >= 30 && (height-screenY)/ppuY <= 110 && screenX/ppuX>=215 && screenX/ppuX<=385)
             isExitDown = true;
 
@@ -227,15 +199,15 @@ public class MainMenuScreen implements Screen, InputProcessor{
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
         if (!Gdx.app.getType().equals(Application.ApplicationType.Desktop))
             return false;
-        if(isPlayDown){
+        if(pressBtn[0]){
             dispose();
             mainGame.setScreen(mainGame.gameScreen);
         }
-        if(isShopDown){
+        if(pressBtn[1]){
             dispose();
             mainGame.setScreen(mainGame.skinsScreen);
         }
-        if(isRecordsDown){
+        if(pressBtn[2]){
             dispose();
             mainGame.setScreen(mainGame.recordsScreen);
         }
@@ -244,9 +216,6 @@ public class MainMenuScreen implements Screen, InputProcessor{
             Gdx.app.exit();
         }
 
-        isPlayDown = false;
-        isShopDown = false;
-        isRecordsDown = false;
         return true;
     }
 

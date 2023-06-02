@@ -19,20 +19,23 @@ public class SkinsScreen implements Screen, InputProcessor {
     }
 
     public OrthographicCamera camera;
-    private Texture skins1, skins2, skins3, skins4, skins5, skins6, skins7, skins8, skins9, skins10,
-            skins11, skins12, skins13, skins14, skins15, skins16;
+    private int skinsCount = 16;
+    private Texture[] skinsTexture = new Texture[skinsCount];
+    private int[] skinsX = new int[]{70,210,350,495,70,210,340,490,70,210,350,490,70,210,350,490};
+    private int[] skinsY = new int[]{600,590,595,610,440,440,450,440,270,280,275,290,110,130,130,120};
     private Texture selectSkin, buySkin, dontBuySkin;
     private Texture exitMenuBtn,exitMenuBtnDown;
     private Music buttonSound;
     private int width, height;
     public float ppuX, ppuY;
+
+    private int btnCount = 16;
+    private int[] btnX = new int[]{20,160,300,440,20,160,300,440,20,160,300,440,20,160,300,440};
+    private int[] btnY = new int[]{570,570,570,570,410,410,410,410,250,250,250,250,90,90,90,90};
+    private boolean[] buyBtn = new boolean[btnCount];
+    private boolean[]selectBtn = new boolean[btnCount];
     private boolean isExitMenuDown;
-    private boolean buy1Btn, buy2Btn, buy3Btn, buy4Btn, buy5Btn, buy6Btn,
-            buy7Btn, buy8Btn, buy9Btn, buy10Btn, buy11Btn, buy12Btn,
-            buy13Btn, buy14Btn, buy15Btn, buy16Btn;
-    private boolean select1Btn, select2Btn, select3Btn, select4Btn, select5Btn, select6Btn,
-            select7Btn, select8Btn, select9Btn, select10Btn, select11Btn, select12Btn,
-            select13Btn, select14Btn, select15Btn, select16Btn;
+
     float CAMERA_WIDTH = 600F;
     float CAMERA_HEIGHT = 800F;
     public int shopCoin = 100;
@@ -49,22 +52,22 @@ public class SkinsScreen implements Screen, InputProcessor {
         selectSkin = new Texture("frame.png");
         dontBuySkin = new Texture("frame2.png");
         buySkin = new Texture("frame3.png");
-        skins1 = new Texture("alien1.png");//
-        skins2 = new Texture("bluecargoship.png");//
-        skins3 = new Texture("blueship2.png");//
-        skins4 = new Texture("destroyer.png");//
-        skins5 = new Texture("F5S4.png");//
-        skins6 = new Texture("greenship2.png");//
-        skins7 = new Texture("RD2.png");//
-        skins8 = new Texture("orangeship2.png");//
-        skins9 = new Texture("shuttlenoweps.png");//
-        skins10 = new Texture("wship1.png");//
-        skins11 = new Texture("alien2.png");//
-        skins12 = new Texture("blue1.png");//
-        skins13 = new Texture("blueshuttlenoweps.png");//
-        skins14 = new Texture("F5S2.png");//
-        skins15 = new Texture("orangeship3.png");//
-        skins16 = new Texture("redship4.png");//
+        skinsTexture[0] = new Texture("alien1.png");
+        skinsTexture[1] = new Texture("bluecargoship.png");
+        skinsTexture[2] = new Texture("blueship2.png");
+        skinsTexture[3] = new Texture("destroyer.png");
+        skinsTexture[4] = new Texture("F5S4.png");
+        skinsTexture[5] = new Texture("greenship2.png");
+        skinsTexture[6] = new Texture("RD2.png");
+        skinsTexture[7] = new Texture("orangeship2.png");
+        skinsTexture[8] = new Texture("shuttlenoweps.png");
+        skinsTexture[9] = new Texture("wship1.png");
+        skinsTexture[10] = new Texture("alien2.png");
+        skinsTexture[11] = new Texture("blue1.png");
+        skinsTexture[12] = new Texture("blueshuttlenoweps.png");
+        skinsTexture[13] = new Texture("F5S2.png");
+        skinsTexture[14] = new Texture("orangeship3.png");
+        skinsTexture[15] = new Texture("redship4.png");
         exitMenuBtn = new Texture("button5.png");
         exitMenuBtnDown = new Texture("button6.png");
     }
@@ -89,26 +92,13 @@ public class SkinsScreen implements Screen, InputProcessor {
     }
 
     public void drawSkins(){
-        mainGame.batch.draw(skins1, 70, 600);
-        mainGame.batch.draw(skins2, 210, 590);
-        mainGame.batch.draw(skins3, 350, 595);
-        mainGame.batch.draw(skins4, 495, 610);
-        mainGame.batch.draw(skins5, 70, 440);
-        mainGame.batch.draw(skins6, 210, 440);
-        mainGame.batch.draw(skins7, 340, 450);
-        mainGame.batch.draw(skins8, 490, 440);
-        mainGame.batch.draw(skins9, 70, 270);
-        mainGame.batch.draw(skins10, 210, 280);
-        mainGame.batch.draw(skins11, 350, 275);
-        mainGame.batch.draw(skins12, 490, 290);
-        mainGame.batch.draw(skins13, 70, 110);
-        mainGame.batch.draw(skins14, 210, 130);
-        mainGame.batch.draw(skins15, 350, 130);
-        mainGame.batch.draw(skins16, 490, 120);
+        for (int i=0; i<skinsCount; i++){
+            mainGame.batch.draw(skinsTexture[i], skinsX[i], skinsY[i]);
+        }
     }
 
     //вывод кнопок поверх фона
-    public void showButton() {
+    public void exitButton() {
         if (!isExitMenuDown) {
             mainGame.batch.draw(exitMenuBtn, 0, 10);
         } else {
@@ -117,143 +107,27 @@ public class SkinsScreen implements Screen, InputProcessor {
     }
 
     public void buyingSkin(){
-        if (!buy1Btn) {
-            mainGame.batch.draw(dontBuySkin, 20, 570);
-        } else {
-            mainGame.batch.draw(buySkin, 20, 570);
-        }
-        if (!buy2Btn) {
-            mainGame.batch.draw(dontBuySkin, 160, 570);
-        } else {
-            mainGame.batch.draw(buySkin, 160, 570);
-        }
-        if (!buy3Btn) {
-            mainGame.batch.draw(dontBuySkin, 300, 570);
-        } else {
-            mainGame.batch.draw(buySkin, 300, 570);
-        }
-        if (!buy4Btn) {
-            mainGame.batch.draw(dontBuySkin, 440, 570);
-        } else {
-            mainGame.batch.draw(buySkin, 440, 570);
-        }
-        if (!buy5Btn) {
-            mainGame.batch.draw(dontBuySkin, 20, 410);
-        } else {
-            mainGame.batch.draw(buySkin, 20, 410);
-        }
-        if (!buy6Btn) {
-            mainGame.batch.draw(dontBuySkin, 160, 410);
-        } else {
-            mainGame.batch.draw(buySkin, 160, 410);
-        }
-        if (!buy7Btn) {
-            mainGame.batch.draw(dontBuySkin, 300, 410);
-        } else {
-            mainGame.batch.draw(buySkin, 300, 410);
-        }
-        if (!buy8Btn) {
-            mainGame.batch.draw(dontBuySkin, 440, 410);
-        } else {
-            mainGame.batch.draw(buySkin, 440, 410);
-        }
-        if (!buy9Btn) {
-            mainGame.batch.draw(dontBuySkin, 20, 250);
-        } else {
-            mainGame.batch.draw(buySkin, 20, 250);
-        }
-        if (!buy10Btn) {
-            mainGame.batch.draw(dontBuySkin, 160, 250);
-        } else {
-            mainGame.batch.draw(buySkin, 160, 250);
-        }
-        if (!buy11Btn) {
-            mainGame.batch.draw(dontBuySkin, 300, 250);
-        } else {
-            mainGame.batch.draw(buySkin, 300, 250);
-        }
-        if (!buy12Btn) {
-            mainGame.batch.draw(dontBuySkin, 440, 250);
-        } else {
-            mainGame.batch.draw(buySkin, 440, 250);
-        }
-        if (!buy13Btn) {
-            mainGame.batch.draw(dontBuySkin, 20, 90);
-        } else {
-            mainGame.batch.draw(buySkin, 20, 90);
-        }
-        if (!buy14Btn)  {
-            mainGame.batch.draw(dontBuySkin, 160, 90);
-        } else {
-            mainGame.batch.draw(buySkin, 160, 90);
-        }
-        if (!buy15Btn) {
-            mainGame.batch.draw(dontBuySkin, 300, 90);
-        } else {
-            mainGame.batch.draw(buySkin, 300, 90);
-        }
-        if (!buy16Btn) {
-            mainGame.batch.draw(dontBuySkin, 440, 90);
-        } else {
-            mainGame.batch.draw(buySkin, 440, 90);
+        for (int i=0; i<btnCount; i++){
+            if (!buyBtn[i]){
+                mainGame.batch.draw(dontBuySkin, btnX[i], btnY[i]);
+            } else {
+                mainGame.batch.draw(buySkin, btnX[i], btnY[i]);
+            }
         }
     }
 
-    public void selectSkin(){
-        if (select1Btn)
-            mainGame.batch.draw(selectSkin, 20, 570);
-
-        if (select2Btn)
-            mainGame.batch.draw(selectSkin, 160, 570);
-
-        if (select3Btn)
-            mainGame.batch.draw(selectSkin, 300, 570);
-
-        if (select4Btn)
-            mainGame.batch.draw(selectSkin, 440, 570);
-
-        if (select5Btn)
-            mainGame.batch.draw(selectSkin, 20, 410);
-
-        if (select6Btn)
-            mainGame.batch.draw(selectSkin, 160, 410);
-
-        if (select7Btn)
-            mainGame.batch.draw(selectSkin, 300, 410);
-
-        if (select8Btn)
-            mainGame.batch.draw(selectSkin, 440, 410);
-
-        if (select9Btn)
-            mainGame.batch.draw(selectSkin, 20, 250);
-
-        if (select10Btn)
-            mainGame.batch.draw(selectSkin, 160, 250);
-
-        if (select11Btn)
-            mainGame.batch.draw(selectSkin, 300, 250);
-
-        if (select12Btn)
-            mainGame.batch.draw(selectSkin, 440, 250);
-
-        if (select13Btn)
-            mainGame.batch.draw(selectSkin, 20, 90);
-
-        if (select14Btn)
-            mainGame.batch.draw(selectSkin, 160, 90);
-
-        if (select15Btn)
-            mainGame.batch.draw(selectSkin, 300, 90);
-
-        if (select16Btn)
-            mainGame.batch.draw(selectSkin, 440, 90);
-    }
+    /*public void selectSkin(){
+        for (int i=0; i<btnCount; i++){
+            if (selectBtn[i]) {
+                mainGame.batch.draw(selectSkin, btnX[i], btnY[i]);
+            }
+        }
+    }*/
 
     @Override
     public void show() {
         ppuX = (float)width / CAMERA_WIDTH;
         ppuY = (float)height / CAMERA_HEIGHT;
-
         isExitMenuDown = false;
         mainGame.batch = new SpriteBatch();
         camera = new OrthographicCamera();
@@ -285,9 +159,9 @@ public class SkinsScreen implements Screen, InputProcessor {
         showBG();
         shopCoin();
         drawSkins();
-        showButton();
+        exitButton();
         buyingSkin();
-        selectSkin();
+        //selectSkin();
         showText();
 
         mainGame.batch.end();
@@ -320,10 +194,8 @@ public class SkinsScreen implements Screen, InputProcessor {
     public void dispose() {
         Gdx.input.setInputProcessor(null);
         try{
-
             exitMenuBtn.dispose();
             exitMenuBtnDown.dispose();
-
         }
         catch(Exception e){
         }
@@ -347,167 +219,18 @@ public class SkinsScreen implements Screen, InputProcessor {
     //границы кнопок и обработка нажатий
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        if((height-screenY)/ppuY >= 570 && (height-screenY)/ppuY <= 720 && screenX/ppuX>=20 && screenX/ppuX<=170) {
-            if ((shopCoin>=10)&&(!buy1Btn)){
-                buttonSound.play();
-                shopCoin = shopCoin-10;
-                buy1Btn = true;
-            }else if ((buy1Btn) && (!select1Btn)){
-                buttonSound.play();
-                select1Btn = true;
+        for (int i = 0; i<btnCount; i++) {
+            if ((height - screenY) / ppuY >= btnY[i] && (height - screenY) / ppuY <= btnY[i]+150 && screenX / ppuX >= btnX[i] && screenX / ppuX <= btnX[i]+140) {
+                if ((shopCoin >= 10) && (!buyBtn[i])) {
+                    buttonSound.play();
+                    shopCoin = shopCoin - 10;
+                    buyBtn[i] = true;
+                } else if ((buyBtn[i]) && (!selectBtn[i])) {
+                    buttonSound.play();
+                    selectBtn[i] = true;
+                }
             }
         }
-        if((height-screenY)/ppuY >= 570 && (height-screenY)/ppuY <= 720 && screenX/ppuX>=160 && screenX/ppuX<=310) {
-            if ((shopCoin>=10)&&(!buy2Btn)){
-                buttonSound.play();
-                shopCoin -= 10;
-                buy2Btn = true;
-            }else if ((buy2Btn) && (!select2Btn)){
-                buttonSound.play();
-                select2Btn = true;
-            }
-        }
-        if((height-screenY)/ppuY >= 570 && (height-screenY)/ppuY <= 720 && screenX/ppuX>=300 && screenX/ppuX<=450) {
-            if ((shopCoin>=10)&&(!buy3Btn)){
-                buttonSound.play();
-                shopCoin -= 10;
-                buy3Btn = true;
-            }else if ((buy3Btn) && (!select3Btn)){
-                buttonSound.play();
-                select3Btn = true;
-            }
-        }
-        if((height-screenY)/ppuY >= 570 && (height-screenY)/ppuY <= 720 && screenX/ppuX>=440 && screenX/ppuX<=590) {
-            if ((shopCoin>=10)&&(!buy4Btn)){
-                buttonSound.play();
-                shopCoin -= 10;
-                buy4Btn = true;
-            }else if ((buy4Btn) && (!select4Btn)){
-                buttonSound.play();
-                select4Btn = true;
-            }
-        }
-        if((height-screenY)/ppuY >= 410 && (height-screenY)/ppuY <= 560 && screenX/ppuX>=20 && screenX/ppuX<=170) {
-            if ((shopCoin>=10)&&(!buy5Btn)){
-                buttonSound.play();
-                shopCoin -= 10;
-                buy5Btn = true;
-            }else if ((buy5Btn) && (!select5Btn)){
-                buttonSound.play();
-                select5Btn = true;
-            }
-        }
-        if((height-screenY)/ppuY >= 410 && (height-screenY)/ppuY <= 560 && screenX/ppuX>=160 && screenX/ppuX<=310) {
-            if ((shopCoin>=10)&&(!buy6Btn)){
-                buttonSound.play();
-                shopCoin -= 10;
-                buy6Btn = true;
-            }else if ((buy6Btn) && (!select6Btn)){
-                buttonSound.play();
-                select6Btn = true;
-            }
-        }
-        if((height-screenY)/ppuY >= 410 && (height-screenY)/ppuY <= 560 && screenX/ppuX>=300 && screenX/ppuX<=450) {
-            if ((shopCoin>=10)&&(!buy7Btn)){
-                buttonSound.play();
-                shopCoin -= 10;
-                buy7Btn = true;
-            }else if ((buy7Btn) && (!select7Btn)){
-                buttonSound.play();
-                select7Btn = true;
-            }
-        }
-        if((height-screenY)/ppuY >= 410 && (height-screenY)/ppuY <= 560 && screenX/ppuX>=440 && screenX/ppuX<=590) {
-            if ((shopCoin>=10)&&(!buy8Btn)){
-                buttonSound.play();
-                shopCoin -= 10;
-                buy8Btn = true;
-            }else if ((buy8Btn) && (!select8Btn)){
-                buttonSound.play();
-                select8Btn = true;
-            }
-        }
-        if((height-screenY)/ppuY >= 250 && (height-screenY)/ppuY <= 400 && screenX/ppuX>=20 && screenX/ppuX<=170) {
-            if ((shopCoin>=10)&&(!buy9Btn)){
-                buttonSound.play();
-                shopCoin -= 10;
-                buy9Btn = true;
-            }else if ((buy9Btn) && (!select9Btn)){
-                buttonSound.play();
-                select9Btn = true;
-            }
-        }
-        if((height-screenY)/ppuY >= 250 && (height-screenY)/ppuY <= 400 && screenX/ppuX>=160 && screenX/ppuX<=310) {
-            if ((shopCoin>=10)&&(!buy10Btn)){
-                buttonSound.play();
-                shopCoin -= 10;
-                buy10Btn = true;
-            }else if ((buy10Btn) && (!select10Btn)){
-                buttonSound.play();
-                select10Btn = true;
-            }
-        }
-        if((height-screenY)/ppuY >= 250 && (height-screenY)/ppuY <= 400 && screenX/ppuX>=300 && screenX/ppuX<=450) {
-            if ((shopCoin>=10)&&(!buy11Btn)){
-                buttonSound.play();
-                shopCoin -= 10;
-                buy11Btn = true;
-            }else if ((buy11Btn) && (!select11Btn)){
-                buttonSound.play();
-                select11Btn = true;
-            }
-        }
-        if((height-screenY)/ppuY >= 250 && (height-screenY)/ppuY <= 400 && screenX/ppuX>=440 && screenX/ppuX<=590) {
-            if ((shopCoin>=10)&&(!buy12Btn)){
-                buttonSound.play();
-                shopCoin -= 10;
-                buy12Btn = true;
-            }else if ((buy12Btn) && (!select12Btn)){
-                buttonSound.play();
-                select12Btn = true;
-            }
-        }
-        if((height-screenY)/ppuY >= 90 && (height-screenY)/ppuY <= 240 && screenX/ppuX>=20 && screenX/ppuX<=170) {
-            if ((shopCoin>=10)&&(!buy13Btn)){
-                buttonSound.play();
-                shopCoin -= 10;
-                buy13Btn = true;
-            }else if ((buy13Btn) && (!select13Btn)){
-                buttonSound.play();
-                select13Btn = true;
-            }
-        }
-        if((height-screenY)/ppuY >= 90 && (height-screenY)/ppuY <= 240 && screenX/ppuX>=160 && screenX/ppuX<=310) {
-            if ((shopCoin>=10)&&(!buy14Btn)){
-                buttonSound.play();
-                shopCoin -= 10;
-                buy14Btn = true;
-            }else if ((buy14Btn) && (!select14Btn)){
-                buttonSound.play();
-                select14Btn = true;
-            }
-        }
-        if((height-screenY)/ppuY >= 90 && (height-screenY)/ppuY <= 240 && screenX/ppuX>=300 && screenX/ppuX<=450) {
-            if ((shopCoin>=10)&&(!buy15Btn)){
-                buttonSound.play();
-                shopCoin -= 10;
-                buy15Btn = true;
-            }else if ((buy15Btn) && (!select15Btn)){
-                buttonSound.play();
-                select15Btn = true;
-            }
-        }
-        if((height-screenY)/ppuY >= 90 && (height-screenY)/ppuY <= 240 && screenX/ppuX>=440 && screenX/ppuX<=590) {
-            if ((shopCoin>=10)&&(!buy16Btn)){
-                buttonSound.play();
-                shopCoin -= 10;
-                buy16Btn = true;
-            }else if ((buy16Btn) && (!select16Btn)){
-                buttonSound.play();
-                select16Btn = true;
-            }
-        }
-
 
         if((height-screenY)/ppuY >= 10 && (height-screenY)/ppuY <= 93 && screenX/ppuX>=0 && screenX/ppuX<=100) {
             buttonSound.play();
