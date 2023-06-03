@@ -20,7 +20,7 @@ public class SkinsScreen implements Screen, InputProcessor {
     public OrthographicCamera camera;
     private final int skinsCount = 16;
     private final Texture[] skinsTexture = new Texture[skinsCount];
-    private final int[] skinsX = new int[]{70,210,350,495,70,210,340,490,70,210,350,490,70,210,350,490};
+    private final int[] skinsX = new int[]{70,210,350,490,70,210,340,490,70,210,350,490,70,210,350,490};
     private final int[] skinsY = new int[]{600,590,595,610,440,440,450,440,270,280,275,290,110,130,130,120};
     private Texture selectSkin, buySkin, dontBuySkin;
     private Texture exitMenuBtn,exitMenuBtnDown;
