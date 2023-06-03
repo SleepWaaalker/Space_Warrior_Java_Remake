@@ -12,35 +12,33 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mygdx.game.MainGame;
 
 public class SkinsScreen implements Screen, InputProcessor {
-    private MainGame mainGame;
-
+    private final MainGame mainGame;
     public SkinsScreen(MainGame mainGame) {
         this.mainGame = mainGame;
     }
 
     public OrthographicCamera camera;
-    private int skinsCount = 16;
-    private Texture[] skinsTexture = new Texture[skinsCount];
-    private int[] skinsX = new int[]{70,210,350,495,70,210,340,490,70,210,350,490,70,210,350,490};
-    private int[] skinsY = new int[]{600,590,595,610,440,440,450,440,270,280,275,290,110,130,130,120};
+    private final int skinsCount = 16;
+    private final Texture[] skinsTexture = new Texture[skinsCount];
+    private final int[] skinsX = new int[]{70,210,350,495,70,210,340,490,70,210,350,490,70,210,350,490};
+    private final int[] skinsY = new int[]{600,590,595,610,440,440,450,440,270,280,275,290,110,130,130,120};
     private Texture selectSkin, buySkin, dontBuySkin;
     private Texture exitMenuBtn,exitMenuBtnDown;
     private Music buttonSound;
     private int width, height;
     public float ppuX, ppuY;
-
-    private int btnCount = 16;
-    private int[] btnX = new int[]{20,160,300,440,20,160,300,440,20,160,300,440,20,160,300,440};
-    private int[] btnY = new int[]{570,570,570,570,410,410,410,410,250,250,250,250,90,90,90,90};
+    private final int btnCount = 16;
+    private final int[] btnX = new int[]{20,160,300,440,20,160,300,440,20,160,300,440,20,160,300,440};
+    private final int[] btnY = new int[]{570,570,570,570,410,410,410,410,250,250,250,250,90,90,90,90};
     private boolean[] buyBtn = new boolean[btnCount];
     private boolean[]selectBtn = new boolean[btnCount];
+    private int selectedSkin;
     private boolean isExitMenuDown;
 
     float CAMERA_WIDTH = 600F;
     float CAMERA_HEIGHT = 800F;
     public int shopCoin = 100;
     String coinPrint;
-
 
     //загрузка фоновой музыки
     private void loadMusic() {
@@ -83,6 +81,8 @@ public class SkinsScreen implements Screen, InputProcessor {
         mainGame.font1.draw(mainGame.batch, "Shop", 220, 790);
         mainGame.font3.draw(mainGame.batch, "<-", 20, 80);
     }
+
+    //прорисовка количества монет
     public void shopCoin(){
         coinPrint = String.valueOf(shopCoin);
         mainGame.font3.draw(mainGame.batch, "coin:", 300, 60);
@@ -91,13 +91,14 @@ public class SkinsScreen implements Screen, InputProcessor {
 
     }
 
+    //прорисовка скинов для покупки в магазине
     public void drawSkins(){
         for (int i=0; i<skinsCount; i++){
             mainGame.batch.draw(skinsTexture[i], skinsX[i], skinsY[i]);
         }
     }
 
-    //вывод кнопок поверх фона
+    //прорисовка кнопки выхода
     public void exitButton() {
         if (!isExitMenuDown) {
             mainGame.batch.draw(exitMenuBtn, 0, 10);
@@ -106,7 +107,9 @@ public class SkinsScreen implements Screen, InputProcessor {
         }
     }
 
+    //прорисовка рамок показывающих куплен ли скин
     public void buyingSkin(){
+        buyBtn[0] = true;
         for (int i=0; i<btnCount; i++){
             if (!buyBtn[i]){
                 mainGame.batch.draw(dontBuySkin, btnX[i], btnY[i]);
@@ -116,13 +119,14 @@ public class SkinsScreen implements Screen, InputProcessor {
         }
     }
 
-    /*public void selectSkin(){
+    //прорисовка рамок показывающих выбран ли скин
+    public void selectSkin(){
         for (int i=0; i<btnCount; i++){
             if (selectBtn[i]) {
                 mainGame.batch.draw(selectSkin, btnX[i], btnY[i]);
             }
         }
-    }*/
+    }
 
     @Override
     public void show() {
@@ -149,6 +153,7 @@ public class SkinsScreen implements Screen, InputProcessor {
         ppuY = (float)height / CAMERA_HEIGHT;
     }
 
+    //рендер текстур
     @Override
     public void render(float delta) {
         Gdx.gl.glClearColor(0, 0, 0.2f, 1);
@@ -161,9 +166,8 @@ public class SkinsScreen implements Screen, InputProcessor {
         drawSkins();
         exitButton();
         buyingSkin();
-        //selectSkin();
+        selectSkin();
         showText();
-
         mainGame.batch.end();
     }
 
@@ -219,6 +223,7 @@ public class SkinsScreen implements Screen, InputProcessor {
     //границы кнопок и обработка нажатий
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        //обработка нажатий в пределах рамок
         for (int i = 0; i<btnCount; i++) {
             if ((height - screenY) / ppuY >= btnY[i] && (height - screenY) / ppuY <= btnY[i]+150 && screenX / ppuX >= btnX[i] && screenX / ppuX <= btnX[i]+140) {
                 if ((shopCoin >= 10) && (!buyBtn[i])) {
@@ -227,11 +232,17 @@ public class SkinsScreen implements Screen, InputProcessor {
                     buyBtn[i] = true;
                 } else if ((buyBtn[i]) && (!selectBtn[i])) {
                     buttonSound.play();
+                    if (selectedSkin != -1) {
+                        selectBtn[selectedSkin] = false;
+                    }
+                    selectedSkin = i;
                     selectBtn[i] = true;
+
                 }
             }
         }
 
+        //обработка нажатий кнопки выхода в меню
         if((height-screenY)/ppuY >= 10 && (height-screenY)/ppuY <= 93 && screenX/ppuX>=0 && screenX/ppuX<=100) {
             buttonSound.play();
             isExitMenuDown = true;
@@ -239,12 +250,17 @@ public class SkinsScreen implements Screen, InputProcessor {
         return true;
     }
 
-    //при нажатии происходит переход на другой экран
+    //при нажатии происходит действие
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
         if (!Gdx.app.getType().equals(Application.ApplicationType.Desktop))
             return false;
 
+
+
+
+
+        //при нажатии происходит переход в меню
         if(isExitMenuDown){
             dispose();
             mainGame.setScreen(mainGame.mainMenuScreen);
