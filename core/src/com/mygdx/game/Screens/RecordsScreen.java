@@ -56,7 +56,7 @@ public class RecordsScreen implements Screen, InputProcessor {
     public void showText(){
         mainGame.font4.draw(mainGame.batch, "Records", 177, 780);
         mainGame.font1.draw(mainGame.batch, "Records", 180, 780);
-        mainGame.font3.draw(mainGame.batch, "<-", 30, 85);
+        mainGame.font3.draw(mainGame.batch, "<-", 20, 80);
 
     }
 
