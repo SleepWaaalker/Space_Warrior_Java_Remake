@@ -9,15 +9,10 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.mygdx.game.MainGame;
 
 public class RecordsScreen implements Screen, InputProcessor {
-    private MainGame mainGame;
+    private final MainGame mainGame;
 
     public RecordsScreen(MainGame mainGame) {
         this.mainGame = mainGame;
@@ -140,14 +135,9 @@ public class RecordsScreen implements Screen, InputProcessor {
     @Override
     public void dispose() {
         Gdx.input.setInputProcessor(null);
-        try{
+        exitMenuBtn.dispose();
+        exitMenuBtnDown.dispose();
 
-            exitMenuBtn.dispose();
-            exitMenuBtnDown.dispose();
-
-        }
-        catch(Exception e){
-        }
     }
 
     @Override

@@ -6,10 +6,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
-import com.mygdx.game.Screens.GameScreen;
-import com.mygdx.game.Screens.MainMenuScreen;
-import com.mygdx.game.Screens.RecordsScreen;
-import com.mygdx.game.Screens.SkinsScreen;
+import com.mygdx.game.Screens.*;
 
 public class MainGame extends Game{
 
@@ -18,7 +15,7 @@ public class MainGame extends Game{
 	public RecordsScreen recordsScreen;
 	public MainMenuScreen mainMenuScreen;
 	public SpriteBatch batch;
-	public BitmapFont font1, font2, font3, font4, font5;
+	public BitmapFont font1, font2, font3, font4, font5, font6;
 	public Texture bg;
 
 	public void fonts(){
@@ -36,21 +33,23 @@ public class MainGame extends Game{
 		font3 = generator.generateFont(parameter3);
 		font4 = generator.generateFont(parameter4);
 		font5 = generator.generateFont(parameter2);
+		font6 = generator.generateFont(parameter2);
 		font1.setColor(1, 0.1f, 0.1f, 1);
 		font2.setColor(0.8f, 0.8f, 0.2f, 1);
 		font3.setColor(0.8f, 0.8f, 0.2f, 1);
 		font4.setColor(0.8f, 0.8f, 0.2f, 1);
 		font5.setColor(1, 0.1f, 0.1f, 1);
+		font6.setColor(0.8f, 0.8f, 0.2f, 1);
 	}
 
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
 		fonts();
-		gameScreen = new GameScreen(this);
-		skinsScreen = new SkinsScreen(this);
-		recordsScreen = new RecordsScreen(this);
 		mainMenuScreen = new MainMenuScreen(this);
+		skinsScreen = new SkinsScreen(this);
+		gameScreen = new GameScreen(this, skinsScreen.getPlayerSkin());
+		recordsScreen = new RecordsScreen(this);
 		setScreen(mainMenuScreen);
 	}
 
@@ -79,4 +78,11 @@ public class MainGame extends Game{
 	public void dispose () {
 		batch.dispose();
 	}
+
+
+
+
+
+
+
 }

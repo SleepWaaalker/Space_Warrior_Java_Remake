@@ -11,18 +11,51 @@ import com.badlogic.gdx.math.Rectangle;
 import com.mygdx.game.MainGame;
 
 public class GameScreen implements Screen, InputProcessor {
-
-    private MainGame mainGame;
     private Texture playerSkin;
+    private Texture gamePlayerSkin;
+    private final MainGame mainGame;
     private Rectangle player;
     private OrthographicCamera camera;
-    public GameScreen(MainGame mainGame) {
+    private boolean isPaused;
+    private Texture pauseTexture;
+    float CAMERA_WIDTH = 600F;
+    float CAMERA_HEIGHT = 800F;
+    private int width, height;
+    public float ppuX, ppuY;
+    public int score = 0;
+    String scorePrint;
+    public GameScreen(MainGame mainGame, Texture playerSkin) {
         this.mainGame = mainGame;
+        this.playerSkin = playerSkin;
+    }
+
+    public void SetCamera(float x, float y){
+        this.camera.position.set(x, y,0);
+        this.camera.update();
+    }
+
+    public void setSize (int w, int h) {
+        this.width = w;
+        this.height = h;
+        ppuX = (float)width / CAMERA_WIDTH;
+        ppuY = (float)height / CAMERA_HEIGHT;
+    }
+
+    public void drawScore(){
+        scorePrint = String.valueOf(score);
+        mainGame.font6.draw(mainGame.batch, "score:", 220, 780);
+        mainGame.font6.draw(mainGame.batch, scorePrint, 350, 780);
     }
 
     @Override
     public void show() {
-        playerSkin = new Texture(Gdx.files.internal("alien1.png"));
+
+        if (playerSkin == null){
+            playerSkin = new Texture(Gdx.files.internal("alien1.png"));
+        }
+        gamePlayerSkin = playerSkin;
+
+        pauseTexture = new Texture(Gdx.files.internal("pause.png"));
         mainGame.batch = new SpriteBatch();
         Gdx.input.setInputProcessor(this);
         camera = new OrthographicCamera();
@@ -36,31 +69,45 @@ public class GameScreen implements Screen, InputProcessor {
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(0, 0, 0.2f, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        camera.update();
-        mainGame.batch.setProjectionMatrix(camera.combined);
+        if(!isPaused){
+            Gdx.gl.glClearColor(0, 0, 0.2f, 1);
+            Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+            camera.update();
+            mainGame.batch.setProjectionMatrix(camera.combined);
+            mainGame.batch.begin();
+            mainGame.batch.draw(mainGame.bg,0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+            mainGame.batch.draw(pauseTexture, 560, 750);
+            mainGame.batch.draw(gamePlayerSkin, player.x, player.y);
+            drawScore();
+            mainGame.batch.end();
+        }else {
+            //отрисовка экрана паузы
+            mainGame.batch.begin();
+            mainGame.batch.draw(mainGame.bg,0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+            mainGame.font4.draw(mainGame.batch, "Pause", 222, 790);
+            mainGame.font1.draw(mainGame.batch, "Pause", 220, 790);
+            mainGame.batch.draw(pauseTexture, 560, 750);
+            mainGame.batch.end();
 
-        mainGame.batch.begin();
-        mainGame.batch.draw(mainGame.bg,0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        mainGame.batch.draw(playerSkin, player.x, player.y);
-
-        mainGame.batch.end();
+            isPaused = true;
+        }
     }
 
     @Override
     public void resize(int width, int height) {
-
+        setSize(width, height);
+        this.width = width;
+        this.height = height;
     }
 
     @Override
     public void pause() {
-
+        isPaused = true;
     }
 
     @Override
     public void resume() {
-
+        isPaused = true;
     }
 
     @Override
@@ -71,7 +118,7 @@ public class GameScreen implements Screen, InputProcessor {
     @Override
     public void dispose() {
         mainGame.batch.dispose();
-        playerSkin.dispose();
+        gamePlayerSkin.dispose();
     }
 
     @Override
@@ -91,7 +138,10 @@ public class GameScreen implements Screen, InputProcessor {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        return false;
+        if ((height - screenY) / ppuY >= 750 && (height - screenY) / ppuY <= 796 && screenX / ppuX >= 560 && screenX / ppuX <= 596) {
+            isPaused = !isPaused;
+        }
+        return true;
     }
 
     @Override

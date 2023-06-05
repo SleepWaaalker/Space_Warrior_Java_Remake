@@ -13,15 +13,15 @@ import com.mygdx.game.MainGame;
 
 public class MainMenuScreen implements Screen, InputProcessor{
 
-    private MainGame mainGame;
+    private final MainGame mainGame;
     public OrthographicCamera camera;
     private Texture menuBtn, menuBtnDown;
     private Texture exitBtn, exitBtnDown;
 
-    private int menuBtnCount = 3;
-    private int menuBtnX = 120;
-    private int[] menuBtnY = new int[]{500,355,200};
-    private boolean[] pressBtn = new boolean[menuBtnCount];
+    private final int menuBtnCount = 3;
+    private final int menuBtnX = 120;
+    private final int[] menuBtnY = new int[]{500,355,200};
+    private final boolean[] pressBtn = new boolean[menuBtnCount];
     private boolean isExitDown;
     private Music gameMusic;
     private Music buttonSound;
@@ -154,14 +154,10 @@ public class MainMenuScreen implements Screen, InputProcessor{
     @Override
     public void dispose() {
         Gdx.input.setInputProcessor(null);
-        try{
-            menuBtnDown.dispose();
-            menuBtn.dispose();
-            exitBtn.dispose();
-            exitBtnDown.dispose();
-        }
-        catch(Exception e){
-        }
+        menuBtnDown.dispose();
+        menuBtn.dispose();
+        exitBtn.dispose();
+        exitBtnDown.dispose();
     }
 
     @Override
