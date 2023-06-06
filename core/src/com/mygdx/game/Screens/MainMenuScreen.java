@@ -17,7 +17,7 @@ public class MainMenuScreen implements Screen, InputProcessor{
     public OrthographicCamera camera;
     private Texture menuBtn, menuBtnDown;
     private Texture exitBtn, exitBtnDown;
-
+    private Texture bg;
     private final int menuBtnCount = 3;
     private final int menuBtnX = 120;
     private final int[] menuBtnY = new int[]{500,355,200};
@@ -47,6 +47,7 @@ public class MainMenuScreen implements Screen, InputProcessor{
 
     //загрузка текстур
     private void loadTextures(){
+        bg = new Texture(Gdx.files.internal("sky.png"));
         menuBtn = new Texture("button1.png");
         menuBtnDown = new Texture("button2.png");
 
@@ -56,7 +57,7 @@ public class MainMenuScreen implements Screen, InputProcessor{
 
     //прорисовка фона
     public void showBG() {
-        mainGame.batch.draw(mainGame.bg,0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        mainGame.batch.draw(bg,0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
     }
 
     //прорисовка текста
@@ -158,6 +159,7 @@ public class MainMenuScreen implements Screen, InputProcessor{
         menuBtn.dispose();
         exitBtn.dispose();
         exitBtnDown.dispose();
+        bg.dispose();
     }
 
     @Override
@@ -195,6 +197,7 @@ public class MainMenuScreen implements Screen, InputProcessor{
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
         if (!Gdx.app.getType().equals(Application.ApplicationType.Desktop))
             return false;
+
         if(pressBtn[0]){
             dispose();
             mainGame.setScreen(mainGame.gameScreen);

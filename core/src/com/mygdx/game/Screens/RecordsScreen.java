@@ -13,12 +13,8 @@ import com.mygdx.game.MainGame;
 
 public class RecordsScreen implements Screen, InputProcessor {
     private final MainGame mainGame;
-
-    public RecordsScreen(MainGame mainGame) {
-        this.mainGame = mainGame;
-    }
     public OrthographicCamera camera;
-
+    private Texture bg;
     private Texture exitMenuBtn;
     private Texture exitMenuBtnDown;
     private Music buttonSound;
@@ -27,7 +23,11 @@ public class RecordsScreen implements Screen, InputProcessor {
     private boolean isExitMenuDown;
     float CAMERA_WIDTH = 600F;
     float CAMERA_HEIGHT = 800F;
-    private int shopCoin;
+
+    public RecordsScreen(MainGame mainGame) {
+        this.mainGame = mainGame;
+        show();
+    }
 
     //загрузка фоновой музыки
     private void loadMusic() {
@@ -36,15 +36,14 @@ public class RecordsScreen implements Screen, InputProcessor {
 
     //загрузка текстур
     private void loadTextures(){
-
-
+        bg = new Texture(Gdx.files.internal("sky.png"));
         exitMenuBtn = new Texture("button5.png");
         exitMenuBtnDown = new Texture("button6.png");
     }
 
     //прорисовка фона
     public void showBG() {
-        mainGame.batch.draw(mainGame.bg,0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        mainGame.batch.draw(bg,0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
     }
 
     //прорисовка текста
@@ -57,10 +56,6 @@ public class RecordsScreen implements Screen, InputProcessor {
 
     //вывод кнопок поверх фона
     public void showButton() {
-
-
-
-
         if (!isExitMenuDown) {
             mainGame.batch.draw(exitMenuBtn, 0, 10);
         } else {
@@ -72,7 +67,6 @@ public class RecordsScreen implements Screen, InputProcessor {
     public void show() {
         ppuX = (float)width / CAMERA_WIDTH;
         ppuY = (float)height / CAMERA_HEIGHT;
-
         isExitMenuDown = false;
         mainGame.batch = new SpriteBatch();
         camera = new OrthographicCamera();
@@ -105,7 +99,6 @@ public class RecordsScreen implements Screen, InputProcessor {
         showBG();
         showButton();
         showText();
-
         mainGame.batch.end();
     }
 
