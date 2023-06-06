@@ -15,8 +15,7 @@ public class RecordsScreen implements Screen, InputProcessor {
     private final MainGame mainGame;
     public OrthographicCamera camera;
     private Texture bg;
-    private Texture exitMenuBtn;
-    private Texture exitMenuBtnDown;
+    private Texture exitMenuBtn, exitMenuBtnDown;
     private Music buttonSound;
     private int width, height;
     public float ppuX, ppuY;
@@ -130,7 +129,6 @@ public class RecordsScreen implements Screen, InputProcessor {
         Gdx.input.setInputProcessor(null);
         exitMenuBtn.dispose();
         exitMenuBtnDown.dispose();
-
     }
 
     @Override

@@ -231,7 +231,7 @@ public class SkinsScreen implements Screen, InputProcessor {
                     buttonSound.play();
                     shopCoin = shopCoin - 10;
                     buyBtn[i] = true;
-                } else if ((buyBtn[i]) && (!selectBtn[i]) && (selectedSkin != i)) {
+                } else if ((buyBtn[i]) && (!selectBtn[i])) {
                     buttonSound.play();
                     if (selectedSkin != -1) {
                         selectBtn[selectedSkin] = false;
@@ -265,8 +265,9 @@ public class SkinsScreen implements Screen, InputProcessor {
                 playerSkin = skinsTexture[0];
             }
         }
-        if (!isBtnSelected) {
-            playerSkin = skinsTexture[0];
+        if (isBtnSelected) {
+            //установка текстуры в игровом экране
+            mainGame.gameScreen.setPlayerTexture(playerSkin);
         }
         //при нажатии происходит переход в меню
         if (isExitMenuDown) {
@@ -281,6 +282,7 @@ public class SkinsScreen implements Screen, InputProcessor {
     public Texture getPlayerSkin() {
         return playerSkin;
     }
+
 
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
