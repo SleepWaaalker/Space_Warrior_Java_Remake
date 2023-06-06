@@ -12,6 +12,7 @@ import com.mygdx.game.MainGame;
 
 public class GameScreen implements Screen, InputProcessor {
     private Texture playerSkin;
+    private Texture bg;
     private Texture gamePlayerSkin;
     private final MainGame mainGame;
     private Rectangle player;
@@ -24,6 +25,7 @@ public class GameScreen implements Screen, InputProcessor {
     public float ppuX, ppuY;
     public int score = 0;
     String scorePrint;
+
     public GameScreen(MainGame mainGame, Texture playerSkin) {
         this.mainGame = mainGame;
         this.playerSkin = playerSkin;
@@ -54,7 +56,7 @@ public class GameScreen implements Screen, InputProcessor {
             playerSkin = new Texture(Gdx.files.internal("alien1.png"));
         }
         gamePlayerSkin = playerSkin;
-
+        bg = new Texture(Gdx.files.internal("sky.png"));
         pauseTexture = new Texture(Gdx.files.internal("pause.png"));
         mainGame.batch = new SpriteBatch();
         Gdx.input.setInputProcessor(this);
@@ -75,7 +77,7 @@ public class GameScreen implements Screen, InputProcessor {
             camera.update();
             mainGame.batch.setProjectionMatrix(camera.combined);
             mainGame.batch.begin();
-            mainGame.batch.draw(mainGame.bg,0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+            mainGame.batch.draw(bg,0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
             mainGame.batch.draw(pauseTexture, 560, 750);
             mainGame.batch.draw(gamePlayerSkin, player.x, player.y);
             drawScore();
@@ -83,7 +85,7 @@ public class GameScreen implements Screen, InputProcessor {
         }else {
             //отрисовка экрана паузы
             mainGame.batch.begin();
-            mainGame.batch.draw(mainGame.bg,0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+            mainGame.batch.draw(bg,0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
             mainGame.font4.draw(mainGame.batch, "Pause", 222, 790);
             mainGame.font1.draw(mainGame.batch, "Pause", 220, 790);
             mainGame.batch.draw(pauseTexture, 560, 750);
@@ -119,6 +121,7 @@ public class GameScreen implements Screen, InputProcessor {
     public void dispose() {
         mainGame.batch.dispose();
         gamePlayerSkin.dispose();
+        bg.dispose();
     }
 
     @Override
