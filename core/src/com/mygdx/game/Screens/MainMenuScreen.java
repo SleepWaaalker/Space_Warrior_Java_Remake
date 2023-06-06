@@ -14,7 +14,7 @@ import com.mygdx.game.MainGame;
 public class MainMenuScreen implements Screen, InputProcessor{
 
     private final MainGame mainGame;
-    public OrthographicCamera camera;
+    private OrthographicCamera camera;
     private Texture menuBtn, menuBtnDown;
     private Texture exitBtn, exitBtnDown;
     private Texture bg;
@@ -26,12 +26,13 @@ public class MainMenuScreen implements Screen, InputProcessor{
     private Music gameMusic;
     private Music buttonSound;
     private int width, height;
-    public float ppuX, ppuY;
-    float CAMERA_WIDTH = 600F;
-    float CAMERA_HEIGHT = 800F;
+    private float ppuX, ppuY;
+    private float CAMERA_WIDTH = 600F;
+    private float CAMERA_HEIGHT = 800F;
     //
     public MainMenuScreen(MainGame main){
         this.mainGame = main;
+        show();
     }
 
     //загрузка фоновой музыки

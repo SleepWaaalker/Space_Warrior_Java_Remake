@@ -20,16 +20,16 @@ public class GameScreen implements Screen, InputProcessor {
     private final MainGame mainGame;
     private Rectangle player;
     private OrthographicCamera camera;
-    float CAMERA_WIDTH = 600F;
-    float CAMERA_HEIGHT = 800F;
+    private float CAMERA_WIDTH = 600F;
+    private float CAMERA_HEIGHT = 800F;
     private int width, height;
-    public float ppuX, ppuY;
-    public int score = 0;
+    private float ppuX, ppuY;
+    private int score = 0;
+    private int lives = 3;
     String scorePrint;
 
-    public GameScreen(MainGame mainGame, Texture playerSkin) {
+    public GameScreen(MainGame mainGame) {
         this.mainGame = mainGame;
-        this.playerTexture  = playerSkin;
     }
 
     public void SetCamera(float x, float y){
@@ -85,6 +85,15 @@ public class GameScreen implements Screen, InputProcessor {
         }
     }
 
+    public void defeat() {
+        if (lives <= 0) {
+            dispose();
+            isPaused = false;
+            mainGame.setScreen(mainGame.defeatScreen);
+        }
+    }
+
+
     @Override
     public void show() {
         mainGame.batch = new SpriteBatch();
@@ -105,6 +114,7 @@ public class GameScreen implements Screen, InputProcessor {
         if(!isPaused){
             Gdx.gl.glClearColor(0, 0, 0.2f, 1);
             Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+            SetCamera(CAMERA_WIDTH / 2, CAMERA_HEIGHT / 2f);
             camera.update();
             mainGame.batch.setProjectionMatrix(camera.combined);
             mainGame.batch.begin();
@@ -152,6 +162,7 @@ public class GameScreen implements Screen, InputProcessor {
         bg.dispose();
         exitMenuBtnDown.dispose();
         exitMenuBtn.dispose();
+        lives = 3;
     }
 
     @Override
@@ -173,6 +184,9 @@ public class GameScreen implements Screen, InputProcessor {
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         if ((height - screenY) / ppuY >= 750 && (height - screenY) / ppuY <= 796 && screenX / ppuX >= 560 && screenX / ppuX <= 596) {
             isPaused = !isPaused;
+
+            lives -= 1;
+
         }
         if(isPaused){
             if((height-screenY)/ppuY >= 10 && (height-screenY)/ppuY <= 120 && screenX/ppuX>=0 && screenX/ppuX<=120) {
@@ -188,7 +202,7 @@ public class GameScreen implements Screen, InputProcessor {
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
         if (!Gdx.app.getType().equals(Application.ApplicationType.Desktop))
             return false;
-
+        defeat();
         if(isPaused){
             if(isExitMenuDown){
                 dispose();

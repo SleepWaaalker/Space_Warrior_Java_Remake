@@ -13,15 +13,15 @@ import com.mygdx.game.MainGame;
 
 public class RecordsScreen implements Screen, InputProcessor {
     private final MainGame mainGame;
-    public OrthographicCamera camera;
+    private OrthographicCamera camera;
     private Texture bg;
     private Texture exitMenuBtn, exitMenuBtnDown;
     private Music buttonSound;
     private int width, height;
-    public float ppuX, ppuY;
+    private float ppuX, ppuY;
     private boolean isExitMenuDown;
-    float CAMERA_WIDTH = 600F;
-    float CAMERA_HEIGHT = 800F;
+    private float CAMERA_WIDTH = 600F;
+    private float CAMERA_HEIGHT = 800F;
 
     public RecordsScreen(MainGame mainGame) {
         this.mainGame = mainGame;

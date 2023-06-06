@@ -12,11 +12,11 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mygdx.game.MainGame;
 
 public class SkinsScreen implements Screen, InputProcessor {
-    public Texture playerSkin;
+    private Texture playerSkin;
     private final MainGame mainGame;
-    public OrthographicCamera camera;
+    private OrthographicCamera camera;
     private final int skinsCount = 16;
-    public final Texture[] skinsTexture = new Texture[skinsCount];
+    private final Texture[] skinsTexture = new Texture[skinsCount];
     private final int[] skinsX = new int[]{70, 210, 350, 490, 70, 210, 340, 490, 70, 210, 350, 490, 70, 210, 350, 490};
     private final int[] skinsY = new int[]{600, 590, 595, 610, 440, 440, 450, 440, 270, 280, 275, 290, 110, 130, 130, 120};
     private Texture selectSkin, buySkin, dontBuySkin;
@@ -24,26 +24,26 @@ public class SkinsScreen implements Screen, InputProcessor {
     private Texture bg;
     private Music buttonSound;
     private int width, height;
-    public float ppuX, ppuY;
+    private float ppuX, ppuY;
     private final int btnCount = 16;
     private final int[] btnX = new int[]{20, 160, 300, 440, 20, 160, 300, 440, 20, 160, 300, 440, 20, 160, 300, 440};
     private final int[] btnY = new int[]{570, 570, 570, 570, 410, 410, 410, 410, 250, 250, 250, 250, 90, 90, 90, 90};
     private final boolean[] buyBtn = new boolean[btnCount];
     private final boolean[] selectBtn = new boolean[btnCount];
-    public int selectedSkin;
+    private int selectedSkin;
     private boolean isExitMenuDown;
-    boolean isBtnSelected = false;
-    float CAMERA_WIDTH = 600F;
-    float CAMERA_HEIGHT = 800F;
-    public int shopCoin = 100;
-    String coinPrint;
+    private boolean isBtnSelected = false;
+    private float CAMERA_WIDTH = 600F;
+    private float CAMERA_HEIGHT = 800F;
+    private int shopCoin = 120;
+    private String coinPrint;
 
     public SkinsScreen(MainGame mainGame) {
         this.mainGame = mainGame;
-        playerSkin = skinsTexture[0];
+        show();
     }
 
-    //загрузка фоновой музыки
+    //загрузка звуков кнопок
     private void loadMusic() {
         buttonSound = Gdx.audio.newMusic(Gdx.files.internal("button_sound.wav"));
     }
@@ -277,10 +277,6 @@ public class SkinsScreen implements Screen, InputProcessor {
 
         isExitMenuDown = false;
         return true;
-    }
-
-    public Texture getPlayerSkin() {
-        return playerSkin;
     }
 
 
