@@ -16,7 +16,6 @@ public class MainGame extends Game{
 	public MainMenuScreen mainMenuScreen;
 	public SpriteBatch batch;
 	public BitmapFont font1, font2, font3, font4, font5, font6;
-	public Texture bg;
 
 	public void fonts(){
 		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("font.ttf"));
@@ -60,7 +59,6 @@ public class MainGame extends Game{
 
 	@Override
 	public void render() {
-		bg = new Texture(Gdx.files.internal("sky.png"));
 		super.render();
 	}
 
@@ -78,11 +76,4 @@ public class MainGame extends Game{
 	public void dispose () {
 		batch.dispose();
 	}
-
-
-
-
-
-
-
 }
