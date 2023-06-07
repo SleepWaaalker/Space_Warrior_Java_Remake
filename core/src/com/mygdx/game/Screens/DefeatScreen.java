@@ -251,7 +251,7 @@ public class DefeatScreen implements Screen, InputProcessor {
     public void drawCoinOutGame(){
         coin = mainGame.skinsScreen.getShopCoin();
         coinPrint = String.valueOf(coin);
-        mainGame.font4.draw(mainGame.batch, "All coin:", 4, 400);
+        mainGame.font4.draw(mainGame.batch, "All coin:", 20, 400);
         mainGame.font4.draw(mainGame.batch, coinPrint, 320, 300);
     }
 
@@ -354,6 +354,7 @@ public class DefeatScreen implements Screen, InputProcessor {
             dispose();
             mainGame.setScreen(mainGame.mainMenuScreen);
         }
+        isSaveDown = false;
         isExitMenuDown = false;
         return true;
     }

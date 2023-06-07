@@ -339,7 +339,6 @@ public class SkinsScreen implements Screen, InputProcessor {
 
     //прорисовка рамок показывающих выбран ли скин
     public void selectSkin() {
-        selectBtn[0] = true;
         for (int i = 0; i < btnCount; i++) {
             if (selectBtn[i]) {
                 mainGame.batch.draw(selectSkin, btnX[i], btnY[i]);
