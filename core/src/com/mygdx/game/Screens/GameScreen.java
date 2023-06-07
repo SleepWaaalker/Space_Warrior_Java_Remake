@@ -253,9 +253,14 @@ public class GameScreen implements Screen, InputProcessor {
     //прорисовка счета и монет
     public void drawScore(){
         scorePrint = String.valueOf(score);
-        coinPrint = String.valueOf(coin);
         mainGame.font6.draw(mainGame.batch, "score:", 220, 780);
         mainGame.font6.draw(mainGame.batch, scorePrint, 350, 780);
+    }
+
+    public void drawCoinInGame(){
+        coinPrint = String.valueOf(coin);
+        mainGame.font6.draw(mainGame.batch, "coin:", 20, 780);
+        mainGame.font6.draw(mainGame.batch, coinPrint, 120, 780);
     }
 
     //прорисовка текста
@@ -290,6 +295,7 @@ public class GameScreen implements Screen, InputProcessor {
             //На данный момент экран поражения вызывается после
             // трех нажатий на кнопку паузы на игровом экране
             mainGame.defeatScreen.setScore(score);
+            mainGame.defeatScreen.setCoin(coin);
             mainGame.skinsScreen.setShopCoin(coin);
             dispose();
             isPaused = false;
@@ -327,6 +333,7 @@ public class GameScreen implements Screen, InputProcessor {
             mainGame.batch.draw(pauseTexture, 560, 750);
             mainGame.batch.draw(gamePlayerSkin, player.x, player.y);
             drawScore();
+            drawCoinInGame();
             mainGame.batch.end();
         }else {
             //отрисовка экрана паузы
@@ -369,6 +376,8 @@ public class GameScreen implements Screen, InputProcessor {
         bg.dispose();
         exitMenuBtnDown.dispose();
         exitMenuBtn.dispose();
+        pauseTexture.dispose();
+        playTexture.dispose();
         //после очистки все значения становятся изначальными
         lives = 3;
         score = 0;
@@ -398,7 +407,7 @@ public class GameScreen implements Screen, InputProcessor {
             //в последствии используются в других местах
             score += 10;
             lives -= 1;
-            coin += 9;
+            coin += 5;
         }
         if(isPaused){
             if((height-screenY)/ppuY >= 10 && (height-screenY)/ppuY <= 120 && screenX/ppuX>=0 && screenX/ppuX<=120) {

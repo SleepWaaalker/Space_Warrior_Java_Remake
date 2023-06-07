@@ -14,18 +14,17 @@ import com.mygdx.game.MainGame;
 import java.util.Scanner;
 
 public class DefeatScreen implements Screen, InputProcessor {
-    private Texture bg, exitMenuBtn, exitMenuBtnDown;
+    private Texture bg, exitMenuBtn, exitMenuBtnDown, saveBtn, saveBtnDown;
     private Music buttonSound;
-    private boolean isExitMenuDown;
+    private boolean isExitMenuDown, isSaveDown;
     private final MainGame mainGame;
     private OrthographicCamera camera;
     private float cameraWidth = 600F;
     private float cameraHeight = 800F;
     private int width, height;
     private float ppuX, ppuY;
-    private int score;
-    String scorePrint;
-
+    private int score, coin;
+    String scorePrint, coinPrint;
 
     public DefeatScreen(MainGame mainGame) {
         this.mainGame = mainGame;
@@ -70,6 +69,30 @@ public class DefeatScreen implements Screen, InputProcessor {
 
     public void setExitMenuDown(boolean exitMenuDown) {
         isExitMenuDown = exitMenuDown;
+    }
+
+    public Texture getSaveBtn() {
+        return saveBtn;
+    }
+
+    public void setSaveBtn(Texture saveBtn) {
+        this.saveBtn = saveBtn;
+    }
+
+    public Texture getSaveBtnDown() {
+        return saveBtnDown;
+    }
+
+    public void setSaveBtnDown(Texture saveBtnDown) {
+        this.saveBtnDown = saveBtnDown;
+    }
+
+    public boolean isSaveDown() {
+        return isSaveDown;
+    }
+
+    public void setSaveDown(boolean saveDown) {
+        isSaveDown = saveDown;
     }
 
     public MainGame getMainGame() {
@@ -148,6 +171,22 @@ public class DefeatScreen implements Screen, InputProcessor {
         this.scorePrint = scorePrint;
     }
 
+    public int getCoin() {
+        return coin;
+    }
+
+    public void setCoin(int coin) {
+        this.coin = coin;
+    }
+
+    public String getCoinPrint() {
+        return coinPrint;
+    }
+
+    public void setCoinPrint(String coinPrint) {
+        this.coinPrint = coinPrint;
+    }
+
     //устанавка позиции камеры на сцене
     public void SetCamera(float x, float y){
         this.camera.position.set(x, y,0);
@@ -167,13 +206,16 @@ public class DefeatScreen implements Screen, InputProcessor {
         bg = new Texture(Gdx.files.internal("sky.png"));
         exitMenuBtn = new Texture("button5.png");
         exitMenuBtnDown = new Texture("button6.png");
+        saveBtn = new Texture("button3.png");
+        saveBtnDown = new Texture("button4.png");
     }
 
     //отрисовка счета
     public void drawScore(){
+        score = getScore();
         scorePrint = String.valueOf(score);
-        mainGame.font4.draw(mainGame.batch, "you score:", 120, 650);
-        mainGame.font4.draw(mainGame.batch, scorePrint, 220, 550);
+        mainGame.font4.draw(mainGame.batch, "you score:", 20, 650);
+        mainGame.font4.draw(mainGame.batch, scorePrint, 320, 550);
     }
 
     //отрисовка текста
@@ -181,6 +223,7 @@ public class DefeatScreen implements Screen, InputProcessor {
         mainGame.font7.draw(mainGame.batch, "You", 110, 790);
         mainGame.font7.draw(mainGame.batch, "lose", 310, 790);
         mainGame.font3.draw(mainGame.batch, "<-", 20, 80);
+        mainGame.font3.draw(mainGame.batch, "Save", 440, 80);
     }
     //загрузка музыки
     private void loadMusic() {
@@ -198,6 +241,18 @@ public class DefeatScreen implements Screen, InputProcessor {
         } else {
             mainGame.batch.draw(exitMenuBtnDown, 0, 10);
         }
+        if (!isSaveDown) {
+            mainGame.batch.draw(saveBtn, 420, 10);
+        } else {
+            mainGame.batch.draw(saveBtnDown, 420, 10);
+        }
+    }
+
+    public void drawCoinOutGame(){
+        coin = mainGame.skinsScreen.getShopCoin();
+        coinPrint = String.valueOf(coin);
+        mainGame.font4.draw(mainGame.batch, "All coin:", 4, 400);
+        mainGame.font4.draw(mainGame.batch, coinPrint, 320, 300);
     }
 
     //создание экрана
@@ -224,6 +279,7 @@ public class DefeatScreen implements Screen, InputProcessor {
         showButton();
         showText();
         drawScore();
+        drawCoinOutGame();
         mainGame.batch.end();
     }
 
@@ -252,6 +308,8 @@ public class DefeatScreen implements Screen, InputProcessor {
         bg.dispose();
         exitMenuBtnDown.dispose();
         exitMenuBtn.dispose();
+        saveBtn.dispose();
+        saveBtnDown.dispose();
     }
 
     @Override
@@ -275,6 +333,10 @@ public class DefeatScreen implements Screen, InputProcessor {
             buttonSound.play();
             isExitMenuDown = true;
         }
+        if((height-screenY)/ppuY >= 10 && (height-screenY)/ppuY <= 120 && screenX/ppuX>=500 && screenX/ppuX<=620) {
+            buttonSound.play();
+            isSaveDown = true;
+        }
         return true;
     }
 
@@ -282,6 +344,10 @@ public class DefeatScreen implements Screen, InputProcessor {
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
         if (!Gdx.app.getType().equals(Application.ApplicationType.Desktop))
             return false;
+
+        if(isSaveDown){
+            mainGame.skinsScreen.writeFileShop();
+        }
 
         if(isExitMenuDown){
             dispose();
