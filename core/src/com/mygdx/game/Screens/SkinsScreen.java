@@ -409,7 +409,7 @@ public class SkinsScreen implements Screen, InputProcessor {
         ppuX = (float)width / cameraWidth;
         ppuY = (float)height / cameraHeight ;
     }
-    
+
     //создание экрана
     @Override
     public void show() {

@@ -18,9 +18,9 @@ public class MainMenuScreen implements Screen, InputProcessor{
     private Texture menuBtn, menuBtnDown;
     private Texture exitBtn, exitBtnDown;
     private Texture bg;
-    private final int menuBtnCount = 3;
+    private final int menuBtnCount = 2;
     private final int menuBtnX = 120;
-    private final int[] menuBtnY = new int[]{500,355,200};
+    private final int[] menuBtnY = new int[]{500,355};
     private final boolean[] pressBtn = new boolean[menuBtnCount];
     private boolean isExitDown;
     private Music gameMusic;
@@ -210,7 +210,6 @@ public class MainMenuScreen implements Screen, InputProcessor{
         mainGame.font1.draw(mainGame.batch, "Space Warrior", 52, 730);
         mainGame.font2.draw(mainGame.batch, "Start", 220, 585);
         mainGame.font2.draw(mainGame.batch, "Shop", 230, 440);
-        mainGame.font2.draw(mainGame.batch, "Records", 175, 285);
         mainGame.font3.draw(mainGame.batch, "Exit", 240, 100);
     }
 
@@ -352,10 +351,6 @@ public class MainMenuScreen implements Screen, InputProcessor{
         if(pressBtn[1]){
             dispose();
             mainGame.setScreen(mainGame.skinsScreen);
-        }
-        if(pressBtn[2]){
-            dispose();
-            mainGame.setScreen(mainGame.recordsScreen);
         }
         if(isExitDown){
             dispose();
