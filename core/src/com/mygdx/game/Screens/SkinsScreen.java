@@ -11,10 +11,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mygdx.game.MainGame;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
+import java.util.Scanner;
 
 public class SkinsScreen implements Screen, InputProcessor {
     private Texture playerSkin;
@@ -45,6 +43,7 @@ public class SkinsScreen implements Screen, InputProcessor {
 
     public SkinsScreen(MainGame mainGame) {
         this.mainGame = mainGame;
+        readFileShop();
         show();
     }
     //геттеры и сеттеры
@@ -340,6 +339,7 @@ public class SkinsScreen implements Screen, InputProcessor {
 
     //прорисовка рамок показывающих выбран ли скин
     public void selectSkin() {
+        selectBtn[0] = true;
         for (int i = 0; i < btnCount; i++) {
             if (selectBtn[i]) {
                 mainGame.batch.draw(selectSkin, btnX[i], btnY[i]);
@@ -347,33 +347,29 @@ public class SkinsScreen implements Screen, InputProcessor {
         }
     }
 
-    //загрузка данных из файла (не работает)
+    //загрузка данных из файла
     public void readFileShop() {
         try {
-            FileReader reader = new FileReader("assets/shop.txt");
-            BufferedReader bufferedReader = new BufferedReader(reader);
-            while ((line = bufferedReader.readLine()) != null) {
-                //обработка строк файла
-                String shopCoinLine = bufferedReader.readLine();
-                String[] shopCoinArr = shopCoinLine.split(": ");
-                shopCoin = Integer.parseInt(shopCoinArr[1]);
-
-                String selectedSkinLine = bufferedReader.readLine();
-                String[] selectedSkinArr = selectedSkinLine.split(": ");
-                selectedSkin = Integer.parseInt(selectedSkinArr[1]);
-
-                String boughtSkinsLine = bufferedReader.readLine();
-                String[] boughtSkinsArr = boughtSkinsLine.split(": ");
-                String[] boughtSkinsStrArr = boughtSkinsArr[1].split(" ");
-                boolean[] buyBtn = new boolean[boughtSkinsStrArr.length];
-                for (int i = 0; i < boughtSkinsStrArr.length; i++) {
-                    if (!boughtSkinsStrArr[i].isEmpty()) {
-                        buyBtn[Integer.parseInt(boughtSkinsStrArr[i])] = true;
+            File file = new File("assets/shop.txt");
+            Scanner scanner = new Scanner(file);
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+                if (line.startsWith("Shop coin: ")) {
+                    shopCoin = Integer.parseInt(line.substring(11)); // удаляем "Shop coin: " и преобразуем строку в число
+                } else if (line.startsWith("Selected skin: ")) {
+                    selectedSkin = Integer.parseInt(line.substring(15)); // удаляем "Selected skin: " и преобразуем строку в число
+                } else if (line.startsWith("Bought skins: ")) {
+                    String[] boughtSkins = line.substring(14).split(" "); // удаляем "Bought skins: " и разбиваем строку на массив строк по пробелам
+                    for (String str : boughtSkins) {
+                        if (!str.isEmpty()) { // проверяем, что строка не пустая
+                            int value = Integer.parseInt(str.trim()); // удаляем лишние пробелы и преобразуем строку в число
+                            buyBtn[value] = true;
+                        }
                     }
                 }
             }
-            bufferedReader.close();
-        } catch (IOException e) {
+            scanner.close();
+        } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
     }
@@ -381,13 +377,14 @@ public class SkinsScreen implements Screen, InputProcessor {
     //загрузка в файл
     public void writeFileShop() {
         try {
+            buyBtn[0] = true;
             FileWriter writer = new FileWriter("assets/shop.txt");
             writer.write("Shop coin: " + shopCoin + "\n");
             writer.write("Selected skin: " + selectedSkin + "\n");
             writer.write("Bought skins: ");
             for (int i = 0; i < buyBtn.length; i++) {
-                if (buyBtn[i]) {
-                    writer.write(i + " ");
+                if ((buyBtn[i])) {
+                    writer.write(" " + i);
                 }
             }
             writer.close();

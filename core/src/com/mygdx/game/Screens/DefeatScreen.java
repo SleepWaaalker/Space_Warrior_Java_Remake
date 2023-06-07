@@ -329,11 +329,11 @@ public class DefeatScreen implements Screen, InputProcessor {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        if((height-screenY)/ppuY >= 10 && (height-screenY)/ppuY <= 120 && screenX/ppuX>=0 && screenX/ppuX<=120) {
+        if((height-screenY)/ppuY >= 10 && (height-screenY)/ppuY <= 90 && screenX/ppuX>=0 && screenX/ppuX<=120) {
             buttonSound.play();
             isExitMenuDown = true;
         }
-        if((height-screenY)/ppuY >= 10 && (height-screenY)/ppuY <= 120 && screenX/ppuX>=500 && screenX/ppuX<=620) {
+        if((height-screenY)/ppuY >= 10 && (height-screenY)/ppuY <= 90 && screenX/ppuX>=420 && screenX/ppuX<=590) {
             buttonSound.play();
             isSaveDown = true;
         }
@@ -346,6 +346,7 @@ public class DefeatScreen implements Screen, InputProcessor {
             return false;
 
         if(isSaveDown){
+            mainGame.skinsScreen.getBuyBtn();
             mainGame.skinsScreen.writeFileShop();
         }
 
