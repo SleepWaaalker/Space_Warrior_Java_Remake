@@ -27,15 +27,158 @@ public class MainMenuScreen implements Screen, InputProcessor{
     private Music buttonSound;
     private int width, height;
     private float ppuX, ppuY;
-    private float CAMERA_WIDTH = 600F;
-    private float CAMERA_HEIGHT = 800F;
+    private float cameraWidth = 600F;
+    private float cameraHeight = 800F;
     //
     public MainMenuScreen(MainGame main){
         this.mainGame = main;
         show();
     }
 
-    //загрузка фоновой музыки
+    //геттеры и сеттеры
+
+
+    public MainGame getMainGame() {
+        return mainGame;
+    }
+
+    public OrthographicCamera getCamera() {
+        return camera;
+    }
+
+    public void setCamera(OrthographicCamera camera) {
+        this.camera = camera;
+    }
+
+    public Texture getMenuBtn() {
+        return menuBtn;
+    }
+
+    public void setMenuBtn(Texture menuBtn) {
+        this.menuBtn = menuBtn;
+    }
+
+    public Texture getMenuBtnDown() {
+        return menuBtnDown;
+    }
+
+    public void setMenuBtnDown(Texture menuBtnDown) {
+        this.menuBtnDown = menuBtnDown;
+    }
+
+    public Texture getExitBtn() {
+        return exitBtn;
+    }
+
+    public void setExitBtn(Texture exitBtn) {
+        this.exitBtn = exitBtn;
+    }
+
+    public Texture getExitBtnDown() {
+        return exitBtnDown;
+    }
+
+    public void setExitBtnDown(Texture exitBtnDown) {
+        this.exitBtnDown = exitBtnDown;
+    }
+
+    public Texture getBg() {
+        return bg;
+    }
+
+    public void setBg(Texture bg) {
+        this.bg = bg;
+    }
+
+    public int getMenuBtnCount() {
+        return menuBtnCount;
+    }
+
+    public int getMenuBtnX() {
+        return menuBtnX;
+    }
+
+    public int[] getMenuBtnY() {
+        return menuBtnY;
+    }
+
+    public boolean[] getPressBtn() {
+        return pressBtn;
+    }
+
+    public boolean isExitDown() {
+        return isExitDown;
+    }
+
+    public void setExitDown(boolean exitDown) {
+        isExitDown = exitDown;
+    }
+
+    public Music getGameMusic() {
+        return gameMusic;
+    }
+
+    public void setGameMusic(Music gameMusic) {
+        this.gameMusic = gameMusic;
+    }
+
+    public Music getButtonSound() {
+        return buttonSound;
+    }
+
+    public void setButtonSound(Music buttonSound) {
+        this.buttonSound = buttonSound;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public void setWidth(int width) {
+        this.width = width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
+    }
+
+    public float getPpuX() {
+        return ppuX;
+    }
+
+    public void setPpuX(float ppuX) {
+        this.ppuX = ppuX;
+    }
+
+    public float getPpuY() {
+        return ppuY;
+    }
+
+    public void setPpuY(float ppuY) {
+        this.ppuY = ppuY;
+    }
+
+    public float getCameraWidth() {
+        return cameraWidth;
+    }
+
+    public void setCameraWidth(float cameraWidth) {
+        this.cameraWidth = cameraWidth;
+    }
+
+    public float getCameraHeight() {
+        return cameraHeight;
+    }
+
+    public void setCameraHeight(float cameraHeight) {
+        this.cameraHeight = cameraHeight;
+    }
+
+    //загрузка фоновой музыки и звуков
     private void loadMusic() {
         if (gameMusic != null){
             gameMusic.stop();
@@ -51,7 +194,6 @@ public class MainMenuScreen implements Screen, InputProcessor{
         bg = new Texture(Gdx.files.internal("sky.png"));
         menuBtn = new Texture("button1.png");
         menuBtnDown = new Texture("button2.png");
-
         exitBtn = new Texture("button3.png");
         exitBtnDown = new Texture("button4.png");
     }
@@ -88,10 +230,25 @@ public class MainMenuScreen implements Screen, InputProcessor{
         }
     }
 
+    //устанавка позиции камеры на сцене
+    public void SetCamera(float x, float y){
+        this.camera.position.set(x, y,0);
+        this.camera.update();
+    }
+
+    //устанавка размера экрана в пикселях и рассчет количества пикселей для оси X и Y
+    public void setSize (int w, int h) {
+        this.width = w;
+        this.height = h;
+        ppuX = (float)width / cameraWidth;
+        ppuY = (float)height / cameraHeight ;
+    }
+
+    //создание экрана
     @Override
     public void show() {
-        ppuX = (float)width / CAMERA_WIDTH;
-        ppuY = (float)height / CAMERA_HEIGHT;
+        ppuX = (float)width / cameraWidth;
+        ppuY = (float)height / cameraHeight;
         for (int i = 0; i<menuBtnCount; i++){
             pressBtn[i] = false;
         }
@@ -104,23 +261,12 @@ public class MainMenuScreen implements Screen, InputProcessor{
         Gdx.input.setInputProcessor(this);
     }
 
-    public void SetCamera(float x, float y){
-        this.camera.position.set(x, y,0);
-        this.camera.update();
-    }
-
-    public void setSize (int w, int h) {
-        this.width = w;
-        this.height = h;
-        ppuX = (float)width / CAMERA_WIDTH;
-        ppuY = (float)height / CAMERA_HEIGHT;
-    }
-
+    //отрисовка текстур
     @Override
     public void render(float delta) {
         Gdx.gl.glClearColor(0, 0, 0.2f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        SetCamera(CAMERA_WIDTH/2, CAMERA_HEIGHT / 2f);
+        SetCamera(cameraWidth/2, cameraHeight / 2f);
 
         mainGame.batch.begin();
         mainGame.batch.setProjectionMatrix(camera.combined);

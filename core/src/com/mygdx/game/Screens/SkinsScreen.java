@@ -33,14 +33,216 @@ public class SkinsScreen implements Screen, InputProcessor {
     private int selectedSkin;
     private boolean isExitMenuDown;
     private boolean isBtnSelected = false;
-    private float CAMERA_WIDTH = 600F;
-    private float CAMERA_HEIGHT = 800F;
-    private int shopCoin = 120;
+    private float cameraWidth = 600F;
+    private float cameraHeight = 800F;
+    private int shopCoin = 0;
     private String coinPrint;
 
     public SkinsScreen(MainGame mainGame) {
         this.mainGame = mainGame;
         show();
+    }
+    //геттеры и сеттеры
+
+
+    public Texture getPlayerSkin() {
+        return playerSkin;
+    }
+
+    public void setPlayerSkin(Texture playerSkin) {
+        this.playerSkin = playerSkin;
+    }
+
+    public MainGame getMainGame() {
+        return mainGame;
+    }
+
+    public OrthographicCamera getCamera() {
+        return camera;
+    }
+
+    public void setCamera(OrthographicCamera camera) {
+        this.camera = camera;
+    }
+
+    public int getSkinsCount() {
+        return skinsCount;
+    }
+
+    public Texture[] getSkinsTexture() {
+        return skinsTexture;
+    }
+
+    public int[] getSkinsX() {
+        return skinsX;
+    }
+
+    public int[] getSkinsY() {
+        return skinsY;
+    }
+
+    public Texture getSelectSkin() {
+        return selectSkin;
+    }
+
+    public void setSelectSkin(Texture selectSkin) {
+        this.selectSkin = selectSkin;
+    }
+
+    public Texture getBuySkin() {
+        return buySkin;
+    }
+
+    public void setBuySkin(Texture buySkin) {
+        this.buySkin = buySkin;
+    }
+
+    public Texture getDontBuySkin() {
+        return dontBuySkin;
+    }
+
+    public void setDontBuySkin(Texture dontBuySkin) {
+        this.dontBuySkin = dontBuySkin;
+    }
+
+    public Texture getExitMenuBtn() {
+        return exitMenuBtn;
+    }
+
+    public void setExitMenuBtn(Texture exitMenuBtn) {
+        this.exitMenuBtn = exitMenuBtn;
+    }
+
+    public Texture getExitMenuBtnDown() {
+        return exitMenuBtnDown;
+    }
+
+    public void setExitMenuBtnDown(Texture exitMenuBtnDown) {
+        this.exitMenuBtnDown = exitMenuBtnDown;
+    }
+
+    public Texture getBg() {
+        return bg;
+    }
+
+    public void setBg(Texture bg) {
+        this.bg = bg;
+    }
+
+    public Music getButtonSound() {
+        return buttonSound;
+    }
+
+    public void setButtonSound(Music buttonSound) {
+        this.buttonSound = buttonSound;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public void setWidth(int width) {
+        this.width = width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
+    }
+
+    public float getPpuX() {
+        return ppuX;
+    }
+
+    public void setPpuX(float ppuX) {
+        this.ppuX = ppuX;
+    }
+
+    public float getPpuY() {
+        return ppuY;
+    }
+
+    public void setPpuY(float ppuY) {
+        this.ppuY = ppuY;
+    }
+
+    public int getBtnCount() {
+        return btnCount;
+    }
+
+    public int[] getBtnX() {
+        return btnX;
+    }
+
+    public int[] getBtnY() {
+        return btnY;
+    }
+
+    public boolean[] getBuyBtn() {
+        return buyBtn;
+    }
+
+    public boolean[] getSelectBtn() {
+        return selectBtn;
+    }
+
+    public int getSelectedSkin() {
+        return selectedSkin;
+    }
+
+    public void setSelectedSkin(int selectedSkin) {
+        this.selectedSkin = selectedSkin;
+    }
+
+    public boolean isExitMenuDown() {
+        return isExitMenuDown;
+    }
+
+    public void setExitMenuDown(boolean exitMenuDown) {
+        isExitMenuDown = exitMenuDown;
+    }
+
+    public boolean isBtnSelected() {
+        return isBtnSelected;
+    }
+
+    public void setBtnSelected(boolean btnSelected) {
+        isBtnSelected = btnSelected;
+    }
+
+    public float getCameraWidth() {
+        return cameraWidth;
+    }
+
+    public void setCameraWidth(float cameraWidth) {
+        this.cameraWidth = cameraWidth;
+    }
+
+    public float getCameraHeight() {
+        return cameraHeight;
+    }
+
+    public void setCameraHeight(float cameraHeight) {
+        this.cameraHeight = cameraHeight;
+    }
+
+    public int getShopCoin() {
+        return shopCoin;
+    }
+
+    public void setShopCoin(int shopCoin) {
+        this.shopCoin += shopCoin;
+    }
+
+    public String getCoinPrint() {
+        return coinPrint;
+    }
+
+    public void setCoinPrint(String coinPrint) {
+        this.coinPrint = coinPrint;
     }
 
     //загрузка звуков кнопок
@@ -132,10 +334,25 @@ public class SkinsScreen implements Screen, InputProcessor {
         }
     }
 
+    //устанавка позиции камеры на сцене
+    public void SetCamera(float x, float y){
+        this.camera.position.set(x, y,0);
+        this.camera.update();
+    }
+
+    //устанавка размера экрана в пикселях и рассчет количества пикселей для оси X и Y
+    public void setSize (int w, int h) {
+        this.width = w;
+        this.height = h;
+        ppuX = (float)width / cameraWidth;
+        ppuY = (float)height / cameraHeight ;
+    }
+
+    //создание экрана
     @Override
     public void show() {
-        ppuX = (float) width / CAMERA_WIDTH;
-        ppuY = (float) height / CAMERA_HEIGHT;
+        ppuX = (float) width / cameraWidth;
+        ppuY = (float) height / cameraHeight;
         isExitMenuDown = false;
         mainGame.batch = new SpriteBatch();
         camera = new OrthographicCamera();
@@ -145,24 +362,12 @@ public class SkinsScreen implements Screen, InputProcessor {
         Gdx.input.setInputProcessor(this);
     }
 
-    public void SetCamera(float x, float y) {
-        this.camera.position.set(x, y, 0);
-        this.camera.update();
-    }
-
-    public void setSize(int w, int h) {
-        this.width = w;
-        this.height = h;
-        ppuX = (float) width / CAMERA_WIDTH;
-        ppuY = (float) height / CAMERA_HEIGHT;
-    }
-
     //рендер текстур
     @Override
     public void render(float delta) {
         Gdx.gl.glClearColor(0, 0, 0.2f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        SetCamera(CAMERA_WIDTH / 2, CAMERA_HEIGHT / 2f);
+        SetCamera(cameraWidth / 2, cameraHeight / 2f);
         mainGame.batch.begin();
         mainGame.batch.setProjectionMatrix(camera.combined);
         showBG();
@@ -227,13 +432,13 @@ public class SkinsScreen implements Screen, InputProcessor {
         //обработка нажатий в пределах рамок
         for (int i = 0; i < btnCount; i++) {
             if ((height - screenY) / ppuY >= btnY[i] && (height - screenY) / ppuY <= btnY[i] + 150 && screenX / ppuX >= btnX[i] && screenX / ppuX <= btnX[i] + 140) {
-                if ((shopCoin >= 10) && (!buyBtn[i])) {
+                if ((shopCoin >= 10) && (!buyBtn[i])) {//покупка
                     buttonSound.play();
                     shopCoin = shopCoin - 10;
                     buyBtn[i] = true;
-                } else if ((buyBtn[i]) && (!selectBtn[i])) {
+                } else if ((buyBtn[i]) && (!selectBtn[i])) {//выбор
                     buttonSound.play();
-                    if (selectedSkin != -1) {
+                    if (selectedSkin != -1) {//очистка выбора
                         selectBtn[selectedSkin] = false;
                     }
                     selectedSkin = i;
@@ -255,7 +460,7 @@ public class SkinsScreen implements Screen, InputProcessor {
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
         if (!Gdx.app.getType().equals(Application.ApplicationType.Desktop))
             return false;
-
+        //передача выбранной текстуры в переменную
         for (int i = 0; i < btnCount; i++) {
             if (selectBtn[i]) {
                 playerSkin = skinsTexture[i];
