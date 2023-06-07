@@ -170,7 +170,7 @@ public class DefeatScreen implements Screen, InputProcessor {
     public void drawScore(){
         scorePrint = String.valueOf(score);
         mainGame.font4.draw(mainGame.batch, "you score:", 120, 650);
-        mainGame.font4.draw(mainGame.batch, scorePrint, 300, 550);
+        mainGame.font4.draw(mainGame.batch, scorePrint, 220, 550);
     }
 
     //отрисовка текста

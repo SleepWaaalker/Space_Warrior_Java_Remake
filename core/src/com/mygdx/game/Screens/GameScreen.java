@@ -14,7 +14,7 @@ import com.mygdx.game.MainGame;
 
 public class GameScreen implements Screen, InputProcessor {
     private Texture playerTexture, bg, gamePlayerSkin, exitMenuBtn, exitMenuBtnDown,
-            pauseTexture;
+            pauseTexture, playTexture;
     private Music buttonSound;
     private boolean isExitMenuDown, isPaused;
     private final MainGame mainGame;
@@ -81,6 +81,14 @@ public class GameScreen implements Screen, InputProcessor {
 
     public void setPauseTexture(Texture pauseTexture) {
         this.pauseTexture = pauseTexture;
+    }
+
+    public Texture getPlayTexture() {
+        return playTexture;
+    }
+
+    public void setPlayTexture(Texture playTexture) {
+        this.playTexture = playTexture;
     }
 
     public Music getButtonSound() {
@@ -232,13 +240,14 @@ public class GameScreen implements Screen, InputProcessor {
     //загрузка текстур
     private void loadTextures(){
         bg = new Texture(Gdx.files.internal("sky.png"));
-        exitMenuBtn = new Texture("button5.png");
-        exitMenuBtnDown = new Texture("button6.png");
+        exitMenuBtn = new Texture("button3.png");
+        exitMenuBtnDown = new Texture("button4.png");
         if (playerTexture  == null){
             playerTexture  = new Texture(Gdx.files.internal("alien1.png"));
         }
         gamePlayerSkin = playerTexture;
         pauseTexture = new Texture(Gdx.files.internal("pause.png"));
+        playTexture = new Texture(Gdx.files.internal("play.png"));
     }
 
     //прорисовка счета и монет
@@ -253,7 +262,7 @@ public class GameScreen implements Screen, InputProcessor {
     public void showText(){
         mainGame.font4.draw(mainGame.batch, "Pause", 222, 790);
         mainGame.font1.draw(mainGame.batch, "Pause", 220, 790);
-        mainGame.font3.draw(mainGame.batch, "<-", 20, 80);
+        mainGame.font3.draw(mainGame.batch, "Menu", 25, 80);
     }
 
     //загрузка звуков кнопок
@@ -261,10 +270,9 @@ public class GameScreen implements Screen, InputProcessor {
         buttonSound = Gdx.audio.newMusic(Gdx.files.internal("button_sound.wav"));
     }
 
-    //прорисовка фона и кнопки паузы
+    //прорисовка фона
     public void showBG() {
         mainGame.batch.draw(bg,0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        mainGame.batch.draw(pauseTexture, 560, 750);
     }
 
     //прорисовка кнопки выхода в меню
@@ -316,6 +324,7 @@ public class GameScreen implements Screen, InputProcessor {
             mainGame.batch.setProjectionMatrix(camera.combined);
             mainGame.batch.begin();
             showBG();
+            mainGame.batch.draw(pauseTexture, 560, 750);
             mainGame.batch.draw(gamePlayerSkin, player.x, player.y);
             drawScore();
             mainGame.batch.end();
@@ -324,6 +333,7 @@ public class GameScreen implements Screen, InputProcessor {
             mainGame.batch.begin();
             mainGame.batch.draw(bg,0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
             showBG();
+            mainGame.batch.draw(playTexture, 560, 750);
             showButton();
             showText();
             mainGame.batch.end();
