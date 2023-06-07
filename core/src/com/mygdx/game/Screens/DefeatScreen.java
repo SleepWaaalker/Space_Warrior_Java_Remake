@@ -11,6 +11,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mygdx.game.MainGame;
 
+import java.util.Scanner;
+
 public class DefeatScreen implements Screen, InputProcessor {
     private Texture bg, exitMenuBtn, exitMenuBtnDown;
     private Music buttonSound;
@@ -23,6 +25,7 @@ public class DefeatScreen implements Screen, InputProcessor {
     private float ppuX, ppuY;
     private int score;
     String scorePrint;
+
 
     public DefeatScreen(MainGame mainGame) {
         this.mainGame = mainGame;

@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.mygdx.game.MainGame;
 
 public class RecordsScreen implements Screen, InputProcessor {
@@ -22,6 +23,7 @@ public class RecordsScreen implements Screen, InputProcessor {
     private boolean isExitMenuDown;
     private float cameraWidth  = 600F;
     private float cameraHeight  = 800F;
+    private Table table;
 
     public RecordsScreen(MainGame mainGame) {
         this.mainGame = mainGame;
@@ -159,19 +161,6 @@ public class RecordsScreen implements Screen, InputProcessor {
         }
     }
 
-    //создание экрана
-    @Override
-    public void show() {
-        ppuX = (float)width / cameraWidth;
-        ppuY = (float)height / cameraHeight ;
-        isExitMenuDown = false;
-        mainGame.batch = new SpriteBatch();
-        camera = new OrthographicCamera();
-        camera.setToOrtho(false, 600, 800);
-        loadAssets();
-        Gdx.input.setInputProcessor(this);
-    }
-
     //устанавка позиции камеры на сцене
     public void SetCamera(float x, float y){
         this.camera.position.set(x, y,0);
@@ -184,6 +173,19 @@ public class RecordsScreen implements Screen, InputProcessor {
         this.height = h;
         ppuX = (float)width / cameraWidth;
         ppuY = (float)height / cameraHeight ;
+    }
+
+    //создание экрана
+    @Override
+    public void show() {
+        Gdx.input.setInputProcessor(this);
+        ppuX = (float)width / cameraWidth;
+        ppuY = (float)height / cameraHeight ;
+        isExitMenuDown = false;
+        mainGame.batch = new SpriteBatch();
+        camera = new OrthographicCamera();
+        camera.setToOrtho(false, 600, 800);
+        loadAssets();
     }
 
     //отрисовка текстур

@@ -11,6 +11,11 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mygdx.game.MainGame;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+
 public class SkinsScreen implements Screen, InputProcessor {
     private Texture playerSkin;
     private final MainGame mainGame;
@@ -35,8 +40,8 @@ public class SkinsScreen implements Screen, InputProcessor {
     private boolean isBtnSelected = false;
     private float cameraWidth = 600F;
     private float cameraHeight = 800F;
-    private int shopCoin = 0;
-    private String coinPrint;
+    private int shopCoin;
+    private String coinPrint,  line;
 
     public SkinsScreen(MainGame mainGame) {
         this.mainGame = mainGame;
@@ -233,8 +238,8 @@ public class SkinsScreen implements Screen, InputProcessor {
         return shopCoin;
     }
 
-    public void setShopCoin(int shopCoin) {
-        this.shopCoin += shopCoin;
+    public void setShopCoin(int coin) {
+        this.shopCoin += coin;
     }
 
     public String getCoinPrint() {
@@ -243,6 +248,14 @@ public class SkinsScreen implements Screen, InputProcessor {
 
     public void setCoinPrint(String coinPrint) {
         this.coinPrint = coinPrint;
+    }
+
+    public String getLine() {
+        return line;
+    }
+
+    public void setLine(String line) {
+        this.line = line;
     }
 
     //загрузка звуков кнопок
@@ -334,6 +347,55 @@ public class SkinsScreen implements Screen, InputProcessor {
         }
     }
 
+    //загрузка данных из файла (не работает)
+    public void readFileShop() {
+        try {
+            FileReader reader = new FileReader("assets/shop.txt");
+            BufferedReader bufferedReader = new BufferedReader(reader);
+            while ((line = bufferedReader.readLine()) != null) {
+                //обработка строк файла
+                String shopCoinLine = bufferedReader.readLine();
+                String[] shopCoinArr = shopCoinLine.split(": ");
+                shopCoin = Integer.parseInt(shopCoinArr[1]);
+
+                String selectedSkinLine = bufferedReader.readLine();
+                String[] selectedSkinArr = selectedSkinLine.split(": ");
+                selectedSkin = Integer.parseInt(selectedSkinArr[1]);
+
+                String boughtSkinsLine = bufferedReader.readLine();
+                String[] boughtSkinsArr = boughtSkinsLine.split(": ");
+                String[] boughtSkinsStrArr = boughtSkinsArr[1].split(" ");
+                boolean[] buyBtn = new boolean[boughtSkinsStrArr.length];
+                for (int i = 0; i < boughtSkinsStrArr.length; i++) {
+                    if (!boughtSkinsStrArr[i].isEmpty()) {
+                        buyBtn[Integer.parseInt(boughtSkinsStrArr[i])] = true;
+                    }
+                }
+            }
+            bufferedReader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    //загрузка в файл
+    public void writeFileShop() {
+        try {
+            FileWriter writer = new FileWriter("assets/shop.txt");
+            writer.write("Shop coin: " + shopCoin + "\n");
+            writer.write("Selected skin: " + selectedSkin + "\n");
+            writer.write("Bought skins: ");
+            for (int i = 0; i < buyBtn.length; i++) {
+                if (buyBtn[i]) {
+                    writer.write(i + " ");
+                }
+            }
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     //устанавка позиции камеры на сцене
     public void SetCamera(float x, float y){
         this.camera.position.set(x, y,0);
@@ -347,7 +409,7 @@ public class SkinsScreen implements Screen, InputProcessor {
         ppuX = (float)width / cameraWidth;
         ppuY = (float)height / cameraHeight ;
     }
-
+    
     //создание экрана
     @Override
     public void show() {
@@ -361,7 +423,6 @@ public class SkinsScreen implements Screen, InputProcessor {
         loadMusic();
         Gdx.input.setInputProcessor(this);
     }
-
     //рендер текстур
     @Override
     public void render(float delta) {
@@ -377,8 +438,10 @@ public class SkinsScreen implements Screen, InputProcessor {
         buyingSkin();
         selectSkin();
         showText();
+        writeFileShop();
         mainGame.batch.end();
     }
+
 
     @Override
     public void resize(int width, int height) {
@@ -446,7 +509,6 @@ public class SkinsScreen implements Screen, InputProcessor {
                 }
             }
         }
-
         //обработка нажатий кнопки выхода в меню
         if ((height - screenY) / ppuY >= 10 && (height - screenY) / ppuY <= 93 && screenX / ppuX >= 0 && screenX / ppuX <= 100) {
             buttonSound.play();
