@@ -1,21 +1,26 @@
 package com.mygdx.game.Screens;
 
-import com.badlogic.gdx.Application;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.*;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Intersector;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.TimeUtils;
 import com.mygdx.game.MainGame;
+
+import java.util.Iterator;
 
 public class GameScreen implements Screen, InputProcessor {
     private Texture playerTexture, bg, gamePlayerSkin, exitMenuBtn, exitMenuBtnDown,
-            pauseTexture, playTexture, livesTexture;
+            pauseTexture, playTexture, livesTexture, healthup, mobImage0, bulletImage;
     private Music buttonSound;
+    private Sound killMobSound, explosionSound, laserSound, powerup;
     private boolean isExitMenuDown, isPaused;
     private final MainGame mainGame;
     private Rectangle player;
@@ -27,7 +32,14 @@ public class GameScreen implements Screen, InputProcessor {
     private int score = 0;
     private int coin = 0;
     private int lives = 3;
+    private int playerSpeed = 400;
     String scorePrint, coinPrint;
+    private Array<Rectangle> mobArmy;
+    private Array<Rectangle> laserBullets;
+    private Array<Rectangle> healthupPacks;
+    private long lastDropTime;
+    private long lastBulletDropTime;
+    private long bulletInterval = 500000000;
 
     public GameScreen(MainGame mainGame) {
         this.mainGame = mainGame;
@@ -58,12 +70,24 @@ public class GameScreen implements Screen, InputProcessor {
         exitMenuBtn = new Texture("button3.png");
         exitMenuBtnDown = new Texture("button4.png");
         livesTexture = new Texture("heart.png");
+        mobImage0 = new Texture(Gdx.files.internal("mob1.png"));
+        healthup = new Texture("healthup.png");
+        if (bulletImage == null){
+            bulletImage = new Texture(Gdx.files.internal("bullet.png"));
+        }
         if (playerTexture  == null){
             playerTexture  = new Texture(Gdx.files.internal("alien1.png"));
         }
         gamePlayerSkin = playerTexture;
         pauseTexture = new Texture(Gdx.files.internal("pause.png"));
         playTexture = new Texture(Gdx.files.internal("play.png"));
+    }
+
+    private void loadSound(){
+        explosionSound = Gdx.audio.newSound(Gdx.files.internal("explosion.ogg"));
+        killMobSound = Gdx.audio.newSound(Gdx.files.internal("kill mob 1.wav"));
+        laserSound = Gdx.audio.newSound(Gdx.files.internal("piu-piu.ogg"));
+        powerup = Gdx.audio.newSound(Gdx.files.internal("powerup.wav"));
     }
 
     //прорисовка счета и монет
@@ -108,8 +132,6 @@ public class GameScreen implements Screen, InputProcessor {
     //при проигрыше все полученные значения передаются на нужные экраны
     public void defeat() {
         if (lives <= 0) {
-            //На данный момент экран поражения вызывается после
-            // трех нажатий на кнопку паузы на игровом экране
             mainGame.defeatScreen.setScore(score);
             mainGame.defeatScreen.setCoin(coin);
             mainGame.skinsScreen.setShopCoin(coin);
@@ -131,6 +153,39 @@ public class GameScreen implements Screen, InputProcessor {
         }
     }
 
+    private void spawnMobArmy()
+    {
+        Rectangle mob = new Rectangle();
+        mob.x = MathUtils.random(0, 600-64);
+        mob.y = 800;
+        mob.width = 32;
+        mob.height = 32;
+        mobArmy.add(mob);
+        lastDropTime = TimeUtils.nanoTime();
+    }
+
+    private void spawnBulletDrop()
+    {
+        Rectangle laserBullet = new Rectangle();
+        laserBullet.x = player.x + 20;
+        laserBullet.y = player.y + 50;
+        laserBullet.width = 2;
+        laserBullet.height = 12;
+        laserBullets.add(laserBullet);
+        lastBulletDropTime = TimeUtils.nanoTime();
+    }
+
+    private void spawnHealthup(float x, float y)
+    {
+        Rectangle healthupPack = new Rectangle();
+        healthupPack.x = x;
+        healthupPack.y = y;
+        healthupPack.width = 25;
+        healthupPack.height = 25;
+        healthupPacks.add(healthupPack);
+        lastDropTime = TimeUtils.nanoTime();
+    }
+
     //создание экрана
     @Override
     public void show() {
@@ -140,16 +195,24 @@ public class GameScreen implements Screen, InputProcessor {
         camera.setToOrtho(false, 600, 800);
         loadTextures();
         loadMusic();
+        loadSound();
         player = new Rectangle();
         player.x = 600 / 2 - 64 / 2; // центрировать корабль по горизонтали
         player.y = 20; // нижний левый угол корабля на 20 пикселей выше нижнего края экрана
         player.width = 64;
         player.height = 64;
+
+        mobArmy = new Array<Rectangle>();
+        spawnMobArmy();
+
+        laserBullets = new Array<Rectangle>();
+        healthupPacks = new Array<Rectangle>();
     }
 
     //отрисовка текстур
     @Override
     public void render(float delta) {
+        float deltaTime = Gdx.graphics.getDeltaTime();
         if(!isPaused){
             Gdx.gl.glClearColor(0, 0, 0.2f, 1);
             Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -163,6 +226,77 @@ public class GameScreen implements Screen, InputProcessor {
             drawScore();
             drawCoinInGame();
             drawLives();
+
+            for(Rectangle mob: mobArmy)
+            {
+                mainGame.batch.draw(mobImage0, mob.x, mob.y);
+            }
+            for (Rectangle laserBullet: laserBullets)
+            {
+                mainGame.batch.draw(bulletImage, laserBullet.x, laserBullet.y);
+            }
+            for (Rectangle healthupPack: healthupPacks)
+            {
+                mainGame.batch.draw(healthup, healthupPack.x, healthupPack.y);
+                healthupPack.y -= 350 * Gdx.graphics.getDeltaTime();
+            }
+
+            for(Iterator<Rectangle> iter = mobArmy.iterator(); iter.hasNext(); )
+            {
+                Rectangle mob = iter.next();
+                if (score >= 250)
+                {
+                    mob.y -= 370 * Gdx.graphics.getDeltaTime();
+                } else{
+                    mob.y -= 200 * Gdx.graphics.getDeltaTime();
+                }
+                if(mob.y + 32 < 0) iter.remove();
+                if(mob.overlaps(player))
+                {
+                    explosionSound.play();
+                    iter.remove();
+                    lives -= 1;
+                }
+
+                for(Iterator<Rectangle> iter2 = laserBullets.iterator(); iter2.hasNext(); ){
+                    Rectangle laserBullet = iter2.next();
+                    if (mob.overlaps(laserBullet)){
+                        if (Intersector.overlaps(mob, laserBullet))
+                        {
+                            if (Math.random()< 0.3) spawnHealthup(mob.x + mob.width / 2, mob.y + mob.height / 2);
+                        }
+                        killMobSound.play();
+                        iter.remove();
+                        iter2.remove();
+                        score += 20;
+                        coin += 2;
+
+                    }
+                }
+            }
+
+            for (Iterator<Rectangle> iter = laserBullets.iterator(); iter.hasNext(); ){
+                Rectangle laserBullet = iter.next();
+                laserBullet.y += 600 * Gdx.graphics.getDeltaTime();
+                if(laserBullet.y + 64 > 900) iter.remove();
+            }
+
+            for (Iterator<Rectangle> iter = healthupPacks.iterator(); iter.hasNext();) {
+                Rectangle healthupPack = iter.next();
+                if (healthupPack.overlaps(player))
+                {
+                    if(lives <=2 ){
+                        lives += 1;
+                        powerup.play();
+                        iter.remove();
+                    }
+                    if (lives>=3)
+                    {
+                        powerup.play();
+                        iter.remove();
+                    }
+                }
+            }
             mainGame.batch.end();
         }else {
             //отрисовка экрана паузы
@@ -175,6 +309,22 @@ public class GameScreen implements Screen, InputProcessor {
             mainGame.batch.end();
             isPaused = true;
         }
+        if(Gdx.input.isKeyPressed(Input.Keys.A)) { player.x -= deltaTime*playerSpeed; }
+        if(Gdx.input.isKeyPressed(Input.Keys.D)) { player.x += deltaTime*playerSpeed; }
+        if (TimeUtils.nanoTime() - lastBulletDropTime > bulletInterval)
+        {
+            if(Gdx.input.isKeyPressed(Input.Keys.SPACE))
+            {
+                laserSound.play();
+                spawnBulletDrop();
+            }
+        }
+
+        if(player.x < 0) { player.x = 0; }
+        if(player.x > 600-64) { player.x = 600-64; }
+
+        if(TimeUtils.nanoTime() - lastDropTime > 1000000000) spawnMobArmy();
+        defeat();
     }
 
     @Override
@@ -232,11 +382,6 @@ public class GameScreen implements Screen, InputProcessor {
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         if ((height - screenY) / ppuY >= 750 && (height - screenY) / ppuY <= 796 && screenX / ppuX >= 560 && screenX / ppuX <= 596) {
             isPaused = !isPaused;
-            //временное решение для проверки работоспособности переносов
-            //в последствии используются в других местах
-            score += 10;
-            lives -= 1;
-            coin += 5;
         }
         if((isPaused)&&((height-screenY)/ppuY >= 10 && (height-screenY)/ppuY <= 120 && screenX/ppuX>=0 && screenX/ppuX<=120)) {
                 buttonSound.play();
@@ -251,7 +396,6 @@ public class GameScreen implements Screen, InputProcessor {
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
         if (!Gdx.app.getType().equals(Application.ApplicationType.Desktop))
             return false;
-        defeat();
         if(isPaused){
             if(isExitMenuDown){
                 dispose();
