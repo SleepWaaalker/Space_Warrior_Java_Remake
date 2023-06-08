@@ -14,7 +14,7 @@ import com.mygdx.game.MainGame;
 
 public class GameScreen implements Screen, InputProcessor {
     private Texture playerTexture, bg, gamePlayerSkin, exitMenuBtn, exitMenuBtnDown,
-            pauseTexture, playTexture;
+            pauseTexture, playTexture, livesTexture;
     private Music buttonSound;
     private boolean isExitMenuDown, isPaused;
     private final MainGame mainGame;
@@ -41,6 +41,14 @@ public class GameScreen implements Screen, InputProcessor {
 
     public void setPlayerTexture(Texture playerSkin) {
         this.playerTexture  = playerSkin;
+    }
+
+    public Texture getLivesTexture() {
+        return livesTexture;
+    }
+
+    public void setLivesTexture(Texture livesTexture) {
+        this.livesTexture = livesTexture;
     }
 
     public Texture getBg() {
@@ -242,6 +250,7 @@ public class GameScreen implements Screen, InputProcessor {
         bg = new Texture(Gdx.files.internal("sky.png"));
         exitMenuBtn = new Texture("button3.png");
         exitMenuBtnDown = new Texture("button4.png");
+        livesTexture = new Texture("heart.png");
         if (playerTexture  == null){
             playerTexture  = new Texture(Gdx.files.internal("alien1.png"));
         }
@@ -303,6 +312,18 @@ public class GameScreen implements Screen, InputProcessor {
         }
     }
 
+    public void drawLives() {
+        if (lives >= 3) {
+            mainGame.batch.draw(livesTexture, 90, 700);
+        }
+        if (lives >= 2) {
+            mainGame.batch.draw(livesTexture, 50, 700);
+        }
+        if (lives >= 1) {
+            mainGame.batch.draw(livesTexture, 10, 700);
+        }
+    }
+
     //создание экрана
     @Override
     public void show() {
@@ -334,6 +355,7 @@ public class GameScreen implements Screen, InputProcessor {
             mainGame.batch.draw(gamePlayerSkin, player.x, player.y);
             drawScore();
             drawCoinInGame();
+            drawLives();
             mainGame.batch.end();
         }else {
             //отрисовка экрана паузы
