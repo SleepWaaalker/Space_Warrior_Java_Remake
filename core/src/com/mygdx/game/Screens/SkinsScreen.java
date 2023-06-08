@@ -178,8 +178,9 @@ public class SkinsScreen implements Screen, InputProcessor {
     //загрузка в файл
     public void writeFileShop() {
         buyBtn[0] = true;
+        FileWriter writer = null;
         try {
-            FileWriter writer = new FileWriter("assets/shop.txt");
+            writer = new FileWriter("assets/shop.txt");
             writer.write("Shop coin: " + shopCoin + "\n");
             writer.write("Selected skin: " + selectedSkin + "\n");
             writer.write("Bought skins: ");
@@ -188,9 +189,16 @@ public class SkinsScreen implements Screen, InputProcessor {
                     writer.write(" " + i);
                 }
             }
-            writer.close();
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            if (writer != null) {
+                try {
+                    writer.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 
@@ -343,7 +351,6 @@ public class SkinsScreen implements Screen, InputProcessor {
         isExitMenuDown = false;
         return true;
     }
-
 
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
