@@ -188,7 +188,7 @@ public class DefeatScreen implements Screen, InputProcessor {
     }
 
     //устанавка позиции камеры на сцене
-    public void SetCamera(float x, float y){
+    public void setCamera(float x, float y){
         this.camera.position.set(x, y,0);
         this.camera.update();
     }
@@ -271,7 +271,7 @@ public class DefeatScreen implements Screen, InputProcessor {
     public void render(float delta) {
         Gdx.gl.glClearColor(0, 0, 0.2f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        SetCamera(cameraWidth / 2, cameraHeight / 2f);
+        setCamera(cameraWidth / 2, cameraHeight / 2f);
         camera.update();
         mainGame.batch.setProjectionMatrix(camera.combined);
         mainGame.batch.begin();
