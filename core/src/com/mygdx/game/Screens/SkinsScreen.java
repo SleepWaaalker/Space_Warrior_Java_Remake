@@ -47,215 +47,16 @@ public class SkinsScreen implements Screen, InputProcessor {
         show();
     }
     //геттеры и сеттеры
-
-
-    public Texture getPlayerSkin() {
-        return playerSkin;
-    }
-
-    public void setPlayerSkin(Texture playerSkin) {
-        this.playerSkin = playerSkin;
-    }
-
-    public MainGame getMainGame() {
-        return mainGame;
-    }
-
-    public OrthographicCamera getCamera() {
-        return camera;
-    }
-
-    public void setCamera(OrthographicCamera camera) {
-        this.camera = camera;
-    }
-
-    public int getSkinsCount() {
-        return skinsCount;
-    }
-
-    public Texture[] getSkinsTexture() {
-        return skinsTexture;
-    }
-
-    public int[] getSkinsX() {
-        return skinsX;
-    }
-
-    public int[] getSkinsY() {
-        return skinsY;
-    }
-
-    public Texture getSelectSkin() {
-        return selectSkin;
-    }
-
-    public void setSelectSkin(Texture selectSkin) {
-        this.selectSkin = selectSkin;
-    }
-
-    public Texture getBuySkin() {
-        return buySkin;
-    }
-
-    public void setBuySkin(Texture buySkin) {
-        this.buySkin = buySkin;
-    }
-
-    public Texture getDontBuySkin() {
-        return dontBuySkin;
-    }
-
-    public void setDontBuySkin(Texture dontBuySkin) {
-        this.dontBuySkin = dontBuySkin;
-    }
-
-    public Texture getExitMenuBtn() {
-        return exitMenuBtn;
-    }
-
-    public void setExitMenuBtn(Texture exitMenuBtn) {
-        this.exitMenuBtn = exitMenuBtn;
-    }
-
-    public Texture getExitMenuBtnDown() {
-        return exitMenuBtnDown;
-    }
-
-    public void setExitMenuBtnDown(Texture exitMenuBtnDown) {
-        this.exitMenuBtnDown = exitMenuBtnDown;
-    }
-
-    public Texture getBg() {
-        return bg;
-    }
-
-    public void setBg(Texture bg) {
-        this.bg = bg;
-    }
-
-    public Music getButtonSound() {
-        return buttonSound;
-    }
-
-    public void setButtonSound(Music buttonSound) {
-        this.buttonSound = buttonSound;
-    }
-
-    public int getWidth() {
-        return width;
-    }
-
-    public void setWidth(int width) {
-        this.width = width;
-    }
-
-    public int getHeight() {
-        return height;
-    }
-
-    public void setHeight(int height) {
-        this.height = height;
-    }
-
-    public float getPpuX() {
-        return ppuX;
-    }
-
-    public void setPpuX(float ppuX) {
-        this.ppuX = ppuX;
-    }
-
-    public float getPpuY() {
-        return ppuY;
-    }
-
-    public void setPpuY(float ppuY) {
-        this.ppuY = ppuY;
-    }
-
-    public int getBtnCount() {
-        return btnCount;
-    }
-
-    public int[] getBtnX() {
-        return btnX;
-    }
-
-    public int[] getBtnY() {
-        return btnY;
-    }
-
     public boolean[] getBuyBtn() {
         return buyBtn;
     }
-
-    public boolean[] getSelectBtn() {
-        return selectBtn;
-    }
-
-    public int getSelectedSkin() {
-        return selectedSkin;
-    }
-
-    public void setSelectedSkin(int selectedSkin) {
-        this.selectedSkin = selectedSkin;
-    }
-
-    public boolean isExitMenuDown() {
-        return isExitMenuDown;
-    }
-
-    public void setExitMenuDown(boolean exitMenuDown) {
-        isExitMenuDown = exitMenuDown;
-    }
-
-    public boolean isBtnSelected() {
-        return isBtnSelected;
-    }
-
-    public void setBtnSelected(boolean btnSelected) {
-        isBtnSelected = btnSelected;
-    }
-
-    public float getCameraWidth() {
-        return cameraWidth;
-    }
-
-    public void setCameraWidth(float cameraWidth) {
-        this.cameraWidth = cameraWidth;
-    }
-
-    public float getCameraHeight() {
-        return cameraHeight;
-    }
-
-    public void setCameraHeight(float cameraHeight) {
-        this.cameraHeight = cameraHeight;
-    }
-
     public int getShopCoin() {
         return shopCoin;
     }
-
     public void setShopCoin(int coin) {
         this.shopCoin += coin;
     }
 
-    public String getCoinPrint() {
-        return coinPrint;
-    }
-
-    public void setCoinPrint(String coinPrint) {
-        this.coinPrint = coinPrint;
-    }
-
-    public String getLine() {
-        return line;
-    }
-
-    public void setLine(String line) {
-        this.line = line;
-    }
 
     //загрузка звуков кнопок
     private void loadMusic() {
@@ -311,6 +112,7 @@ public class SkinsScreen implements Screen, InputProcessor {
 
     //прорисовка скинов для покупки в магазине
     public void drawSkins() {
+        selectBtn[selectedSkin] = true;
         for (int i = 0; i < skinsCount; i++) {
             mainGame.batch.draw(skinsTexture[i], skinsX[i], skinsY[i]);
         }
@@ -375,8 +177,8 @@ public class SkinsScreen implements Screen, InputProcessor {
 
     //загрузка в файл
     public void writeFileShop() {
+        buyBtn[0] = true;
         try {
-            buyBtn[0] = true;
             FileWriter writer = new FileWriter("assets/shop.txt");
             writer.write("Shop coin: " + shopCoin + "\n");
             writer.write("Selected skin: " + selectedSkin + "\n");
