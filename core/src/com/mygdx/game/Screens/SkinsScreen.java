@@ -386,7 +386,7 @@ public class SkinsScreen implements Screen, InputProcessor {
                     writer.write(" " + i);
                 }
             }
-            //writer.close();
+            writer.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
